@@ -7,7 +7,7 @@
 
 #include "shell.h"
 #include "lexical.h"
-// #include "AST.h"
+#include "AST.h"
 // #include "FrontOpt.h"
 // #include "IRGen.h"
 // #include "CFG.h"
@@ -18,11 +18,12 @@
 
 #include <string>
 #include <iostream>
+#include <fstream>
 
 int main(int argc, char **argv)
 {
 
-    /***************  shell  ***************/
+    //-------------------------Shell----------------------------//
 
     // right input: ./KaiSei [options] <input_name> <output_name>
 
@@ -36,7 +37,7 @@ int main(int argc, char **argv)
     if (Safe::GlobalError)
         return 0;
 
-    /***************  frontend  ***************/
+    //-------------------------Frontend----------------------------//
 
     // Lexical Analyze
     Lexical program_file(input_filename);
@@ -48,17 +49,20 @@ int main(int argc, char **argv)
     if (Safe::GlobalError)
         return 0;
 
-    // // AST && Symbol_Table
-    // Symtable symtable;
-    // ProgramAST program(token_head, symtable);
-    // program.Parse();
-    // const AST_PTR& AST_head = program.head;
-    // if (debug_mode == "parse")
-    //     AST_node::print_all(AST_head);
-    // if (debug_mode == "sym")
-    //     Symtable::print_all();
+    // AST && Symbol_Table
+    Symtable symtable;
+    ProgramAST program(token_head, symtable);
+    program.Parse();
+    const AST_PTR &AST_head = program.head;
+    
+    if (debug_mode == "parse")
+        AST_node::print_all(AST_head,0);
+        
+    if (debug_mode == "sym")
+        Symtable::print_all();
 
-    // if (Safe::GlobalError) return 0;
+    if (Safe::GlobalError)
+        return 0;
 
     // // Semantic Check && Frontend Optimize
     // Front::Optimiser::Optimize(AST_head);
@@ -131,8 +135,8 @@ int main(int argc, char **argv)
     //     ARM::print_all(ARM_code);
     // }
 
-    if (Safe::GlobalError)
-        return 0;
+    // if (Safe::GlobalError)
+    //     return 0;
 
     // Dump armv7 code to .s file
     // if (to_assembly)

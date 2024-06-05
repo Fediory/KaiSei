@@ -16,7 +16,6 @@ std::vector<std::string> Lexical::double_operator_list = {"||", "&&", "<=", ">="
 
 // punc
 std::vector<char> Lexical::punctuation_begin_list = {'{', '}', ';', ','};
-// std::vector<std::string> Lexical::punctuation_list = {"{", "}", ";", ","};
 
 // keyword
 std::vector<std::string> Lexical::keyword_list = {"const", "int", "if", "else", "while", "break", "continue", "return"};
@@ -60,6 +59,9 @@ bool token_safe::search_data(std::shared_ptr<token_node> now, const std::string 
     return false;
 }
 
+// print lexical to debug.lex
+// fmt: type line column data
+// number type only [int] 
 void token_node::print_all(const std::shared_ptr<token_node> &head)
 {
     std::shared_ptr<token_node> now(head);

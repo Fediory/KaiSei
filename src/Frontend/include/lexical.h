@@ -4,6 +4,7 @@
  * @brief include in lexical.cpp, only have a class "Lexical".
  * @date 2024/05/01
  */
+
 #pragma once
 
 #include "define.h"
@@ -12,45 +13,6 @@
 #include <fstream>
 #include <iostream>
 #include <algorithm>
-
-// token_node
-#define TOKEN_PTR std::shared_ptr<token_node>
-
-enum token_type
-{
-    NONE,
-    PUNCT,
-    OPERATOR,
-    KEYWORD,
-    NUMBER,
-    IDENT
-};
-
-const std::string token_type_string_name[] = {"NONE\t\t", "PUNCT\t\t", "OPERATOR\t", "KEYWORD\t\t", "NUMBER\t\t", "IDENT\t\t"};
-
-struct token_node
-{
-
-    // basic
-    int line = 0, column = 0;
-    token_type type = NONE;
-    std::string data;
-    std::shared_ptr<token_node> next = nullptr;
-
-    // attribute
-    identify_value_type_tuple IVTT;
-
-    // print
-    static void print_all(const std::shared_ptr<token_node> &head);
-};
-
-namespace token_safe
-{
-    std::shared_ptr<token_node> next(const std::shared_ptr<token_node> &now);
-    std::string data(const std::shared_ptr<token_node> &node);
-    token_type type(const std::shared_ptr<token_node> &now);
-    bool search_data(std::shared_ptr<token_node> now, const std::string &target, const std::string &end);
-}
 
 class Lexical
 {
@@ -73,7 +35,6 @@ protected:
     static std::vector<std::string> comment_list;
 
     static std::vector<char> punctuation_begin_list;
-    // static std::vector<std::string> punctuation_list;
 
     static std::vector<std::string> keyword_list;
 

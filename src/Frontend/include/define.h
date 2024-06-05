@@ -9,6 +9,9 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <fstream>
+
+//-------------------------utils----------------------------//
 
 namespace Safe
 {
@@ -144,150 +147,225 @@ public:
     void array_add(const int &n);
 };
 
-// // Parsing: symtable_node
+//-------------------------Lexical----------------------------//
 
-// struct symtable_node {
+// token_node
+#define TOKEN_PTR std::shared_ptr<token_node>
 
-//     // basic
-//     int table_id = -1;
-//     bool is_head = false;
-//     std::string identifier_name;
-//     std::shared_ptr<symtable_node> next = nullptr;
+enum token_type
+{
+    NONE,
+    PUNCT,
+    OPERATOR,
+    KEYWORD,
+    NUMBER,
+    IDENT
+};
 
-//     // attribute
-//     std::string only_name;
-//     identify_value_type_tuple IVTT;
-//     bool is_const = false;
-//     bool is_static = false;
+const std::string token_type_string_name[] = {
+    "NONE\t\t",
+    "PUNCT\t\t",
+    "OPERATOR\t",
+    "KEYWORD\t\t",
+    "NUMBER\t\t",
+    "IDENT\t\t"};
 
-//     // field, use for const
-//     bool treat_as_constexpr = false;
+struct token_node
+{
 
-//     // use for ir
-//     std::string label_name;
+    // basic
+    int line = 0, column = 0;
+    token_type type = NONE;
+    std::string data;
+    std::shared_ptr<token_node> next = nullptr;
 
-//     // methods
-//     void rename();
-//     void rename(const std::string& name);
+    // attribute
+    identify_value_type_tuple IVTT;
 
-//     // print
-//     static void print(const std::shared_ptr<symtable_node>& symtable_node_head);
-// };
+    // print
+    static void print_all(const std::shared_ptr<token_node> &head);
+};
 
-// #define SYM_PTR std::shared_ptr<symtable_node>
+namespace token_safe
+{
+    std::shared_ptr<token_node> next(const std::shared_ptr<token_node> &now);
+    std::string data(const std::shared_ptr<token_node> &node);
+    token_type type(const std::shared_ptr<token_node> &now);
+    bool search_data(std::shared_ptr<token_node> now, const std::string &target, const std::string &end);
+}
 
-// // Parsing: Symtable
+//-------------------------Parsing----------------------------//
 
-// class Symtable {
-// public:
-//     static std::vector<SYM_PTR> all_symtable_heads;
-//     std::vector<SYM_PTR> heads_chain;
-//     static int table_counts;
-//     int table_id;
-//     SYM_PTR sym_head = nullptr;
-//     SYM_PTR sym_tail = nullptr;
-//     SYM_PTR my_head = nullptr;
-//     SYM_PTR my_tail = nullptr;
+// symtable_node
 
-//     Symtable();
-//     virtual ~Symtable() = default;
+struct symtable_node
+{
 
-//     void extend_from(const std::shared_ptr<Symtable>& last_symtable_ptr);
-//     void append(const symtable_node& append_sym_node);
+    // basic
+    int table_id = -1;
+    bool is_head = false;
+    std::string identifier_name;
+    std::shared_ptr<symtable_node> next = nullptr;
 
-//     void print() const;
-//     void print_chain() const;
-//     static void print_all();
-// };
+    // attribute
+    std::string only_name;
+    identify_value_type_tuple IVTT;
+    bool is_const = false;
+    bool is_static = false;
 
-// #define SYMTABLE_PTR std::shared_ptr<Symtable>
+    // field, use for const
+    bool treat_as_constexpr = false;
 
-// // Parsing: AST_node
+    // use for ir
+    std::string label_name;
 
-// enum AST_type {
-//     None, ProgramBody,
-//     Number, Identifier,
-//     Expression, FunctionUsage, ArrayUsage,
-//     BlockStatement, Statement, KeywordStatement,
-//     NormalStatement, DeclarationStatement,
-//     SingleAssignment, ArrayAssignment, ArrayInitialBlock,
-//     SingleDefinition, ArrayDefinition,
-//     FunctionDefinition,
-//     FunctionParams, FunctionFormParam,
-//     Index,
-// };
+    // methods
+    void rename();
+    void rename(const std::string &name);
 
-// const std::string AST_type_string_name[] = {
-//     "None", "ProgramBody",
-//     "Number", "Identifier",
-//     "Expression", "FunctionUsage", "ArrayUsage",
-//     "BlockStatement", "Statement", "KeywordStatement",
-//     "NormalStatement", "DeclarationStatement",
-//     "SingleAssignment", "ArrayAssignment", "ArrayInitialBlock",
-//     "SingleDefinition", "ArrayDefinition",
-//     "FunctionDefinition",
-//     "FunctionParams", "FunctionFormParam",
-//     "Index",
-// };
+    // print
+    static void print(const std::shared_ptr<symtable_node> &symtable_node_head);
+};
 
-// struct AST_node {
+#define SYM_PTR std::shared_ptr<symtable_node>
 
-//     // normal
-//     AST_type type = None;
-//     std::string data;  // normally raw data; ExpressionAST use it for operator
-//     std::string comment;
-//     std::shared_ptr<AST_node> sister = nullptr;
-//     std::shared_ptr<AST_node> child = nullptr;
-//     // std::shared_ptr<AST_node> parent = nullptr; // don't use parent, or the pointer will form a loop
-//     std::shared_ptr<AST_node> last_child = nullptr;
+// Symtable
 
-//     // symtable
-//     std::shared_ptr<Symtable> symtable_ptr = nullptr;
+#define SYMTABLE_PTR std::shared_ptr<Symtable>
+class Symtable
+{
+public:
+    static std::vector<SYM_PTR> all_symtable_heads;
+    std::vector<SYM_PTR> heads_chain;
+    static int table_counts;
+    int table_id;
+    SYM_PTR sym_head = nullptr;
+    SYM_PTR sym_tail = nullptr;
+    SYM_PTR my_head = nullptr;
+    SYM_PTR my_tail = nullptr;
 
-//     // attribution (same as symtable node)
-//     bool using_attribute = false;
-//     std::string name;
-//     std::string only_name;
-//     identify_value_type_tuple IVTT;
-//     bool is_const = false;
-//     bool is_static = false;
+    Symtable();
+    virtual ~Symtable() = default;
 
-//     // use for Expr optimise
-//     bool count_expr_ending = false;
+    void extend_from(const std::shared_ptr<Symtable> &last_symtable_ptr);
+    void append(const symtable_node &append_sym_node);
 
-//     // declaration bound sym node
-//     std::shared_ptr<symtable_node> declaration_bound_sym_node = nullptr;
+    void print() const;
+    void print_chain() const;
+    static void print_all();
+};
 
-//     // methods
-//     static void connect_child(const std::shared_ptr<AST_node>& parent, const std::shared_ptr<AST_node>& child);
-//     static void reverse_connect_child(const std::shared_ptr<AST_node>& parent, const std::shared_ptr<AST_node>& child);
-//     void absorb_sym_attribution(const std::shared_ptr<symtable_node>& symtable_resource_node);
-//     void copy(const std::shared_ptr<AST_node>& AST_resource_node);
+// AST_node
+#define AST_PTR std::shared_ptr<AST_node>
 
-//     // print
-//     static void print_all(const std::shared_ptr<AST_node>& now, int stage);
-//     static void print_all(const std::shared_ptr<AST_node>& AST_head);
-// };
+enum AST_type
+{
+    None,
+    ProgramBody,
+    Number,
+    Identifier,
+    Expression,
+    FunctionUsage,
+    ArrayUsage,
+    BlockStatement,
+    Statement,
+    KeywordStatement,
+    NormalStatement,
+    DeclarationStatement,
+    SingleAssignment,
+    ArrayAssignment,
+    ArrayInitialBlock,
+    SingleDefinition,
+    ArrayDefinition,
+    FunctionDefinition,
+    FunctionParams,
+    FunctionFormParam,
+    Index,
+};
 
-// struct AST_tuple {
-//     int count;
-//     bool judge;
-// };
+const std::string AST_type_string_name[] = {
+    "None",
+    "ProgramBody",
+    "Number",
+    "Identifier",
+    "Expression",
+    "FunctionUsage",
+    "ArrayUsage",
+    "BlockStatement",
+    "Statement",
+    "KeywordStatement",
+    "NormalStatement",
+    "DeclarationStatement",
+    "SingleAssignment",
+    "ArrayAssignment",
+    "ArrayInitialBlock",
+    "SingleDefinition",
+    "ArrayDefinition",
+    "FunctionDefinition",
+    "FunctionParams",
+    "FunctionFormParam",
+    "Index",
+};
 
-// namespace AST_safe {
-//     void RaiseError(const std::string& error_code, const std::shared_ptr<token_node>& token_node);
-//     std::shared_ptr<symtable_node> search_id_name(const std::string& search_name, const std::shared_ptr<symtable_node>& sym_head);
-//     std::shared_ptr<symtable_node> search_id_name(const std::string& search_name, const std::shared_ptr<Symtable>& symtable_ptr, bool without_chain = false);
-//     std::shared_ptr<symtable_node> search_only_name(const std::string& only_name);
-//     AST_tuple count_child_number(const std::shared_ptr<AST_node>& now_node);
-// }
 
-// #define AST_PTR std::shared_ptr<AST_node>
+
+struct AST_node
+{
+
+    // normal
+    AST_type type = None;
+    std::string data; // normally raw data; ExpressionAST use it for operator
+    std::string comment;
+    std::shared_ptr<AST_node> sister = nullptr;
+    std::shared_ptr<AST_node> child = nullptr;
+    std::shared_ptr<AST_node> last_child = nullptr;
+
+    // symtable
+    std::shared_ptr<Symtable> symtable_ptr = nullptr;
+
+    // attribution (same as symtable node)
+    bool using_attribute = false;
+    std::string name;
+    std::string only_name;
+    identify_value_type_tuple IVTT;
+    bool is_const = false;
+    bool is_static = false;
+
+    // use for expr optimise
+    bool count_expr_ending = false;
+
+    // declaration bound sym node
+    std::shared_ptr<symtable_node> declaration_bound_sym_node = nullptr;
+
+    // methods
+    static void connect_child(const std::shared_ptr<AST_node> &parent, const std::shared_ptr<AST_node> &child);
+    static void reverse_connect_child(const std::shared_ptr<AST_node> &parent, const std::shared_ptr<AST_node> &child);
+    void absorb_sym_attribution(const std::shared_ptr<symtable_node> &symtable_resource_node);
+    void copy(const std::shared_ptr<AST_node> &AST_resource_node);
+
+    // print
+    static void print_all(const std::shared_ptr<AST_node> &now, int stage);
+};
+
+struct AST_tuple
+{
+    int count;
+    bool judge;
+};
+
+namespace AST_safe
+{
+    void raise_error(const std::string &error_code, const std::shared_ptr<token_node> &token_node);
+    std::shared_ptr<symtable_node> search_id_name(const std::string &search_name, const std::shared_ptr<symtable_node> &sym_head);
+    std::shared_ptr<symtable_node> search_id_name(const std::string &search_name, const std::shared_ptr<Symtable> &symtable_ptr, bool without_chain = false);
+    std::shared_ptr<symtable_node> search_only_name(const std::string &only_name);
+    AST_tuple count_child_number(const std::shared_ptr<AST_node> &now_node);
+}
 
 // // Optimise
 
 // namespace AST_optimize_safe {
-//     void RaiseError(const std::string& error_code);
+//     void raise_error(const std::string& error_code);
 // }
 
 // // IRGen
@@ -336,7 +414,7 @@ public:
 // };
 
 // namespace IR_safe {
-//     void RaiseError(const std::string& error_code);
+//     void raise_error(const std::string& error_code);
 // }
 
 // #define IR_PTR std::shared_ptr<IR_node>
