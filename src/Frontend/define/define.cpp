@@ -13,21 +13,22 @@ std::string Debug::Path = "./debug/1.txt";
 std::string Debug::lex_path = "./debug/debug.lex";
 std::string Debug::sym_path = "./debug/symtable.sym";
 std::string Debug::AST_path = "./debug/AST.par";
+std::string Debug::IR_path = "./debug/IR.ir";
 std::ofstream Debug::debug_output(Debug::Path);
 
-void Debug::debug_out(std::string type_path){
+void Debug::debug_out(std::string type_path)
+{
     Debug::debug_output.close();
     std::ofstream debug_file(type_path);
     std::ifstream input_file(Debug::Path);
     std::string temp;
 
-    while (getline(input_file, temp)) 
+    while (getline(input_file, temp))
     {
         debug_file << temp << std::endl;
     }
     std::remove(Debug::Path.c_str());
 }
-
 
 std::string literal_value_storage::to_string() const
 {
@@ -152,7 +153,6 @@ int value_and_type_storage::get_int_value() const
     return storage_value.get_int_value();
 }
 
-
 void value_and_type_storage::parse_from_string(const std::string &str)
 {
     make_unused();
@@ -227,7 +227,6 @@ void identify_value_type_tuple::reset_and_assign_as_int(int x)
     self_storage.change_to_int();
     self_storage.storage_value.cast_and_assign(x);
 }
-
 
 void identify_value_type_tuple::reset_and_parse_from_basic_type(basic_type type, bool is_pointer)
 {
@@ -329,94 +328,3 @@ void identify_value_type_tuple::array_add(const int &n)
 {
     array_length.push_back(n);
 }
-
-
-
-// // IRGen
-
-// std::string IR_tuple::to_string(bool attribute) const {
-//     if (attribute)
-//         if (is_name)
-//             return "{name}[" + IVTT.to_string() + "]" + name;
-//         else
-//             return IVTT.to_string();
-//     else
-//         if (is_name)
-//             return name;
-//         else
-//             return IVTT.to_string();
-// }
-
-// IR_tuple::IR_tuple() {
-//     is_name = true;
-// }
-
-// IR_tuple::IR_tuple(const std::string& str, basic_type type) {
-//     is_name = true;
-//     this->name = str;
-//     IVTT.reset_and_parse_from_basic_type(type);
-// }
-
-// IR_tuple::IR_tuple(int int_num) {
-//     is_name = false;
-//     IVTT.reset_and_assign_as_int(int_num);
-// }
-
-// IR_tuple::IR_tuple(double double_num) {
-//     is_name = false;
-//     IVTT.reset_and_assign_as_float(double_num);
-// }
-
-// IR_tuple::IR_tuple(basic_type pointer_represent_type) {
-//     is_name = false;
-//     IVTT.reset_and_parse_from_basic_type(pointer_represent_type, true);
-// }
-
-// void IR_node::print() const {
-//     std::cout << index << "\t";
-//     if (ir_type == ir_forth) {
-//         std::cout << "    ";
-//         if (opera == "jump" || opera == "jumpr" || opera == "call")
-//             std::cout << opera << " -> "
-//                       << target.to_string(false);
-//         else if (opera == "jumpe")
-//             std::cout << opera << " -> "
-//                       << target.to_string(false) << " if "
-//                       << org_1.to_string() << " == zero";
-//         else if (opera == "jumpn")
-//             std::cout << opera << " -> "
-//                       << target.to_string(false) << " if "
-//                       << org_1.to_string() << " != zero";
-//         else if (opera == "assign" || opera == "sw" || opera == "lw" ||
-//                  opera == "cast-int" || opera == "cast-float" ||
-//                  opera == "not" ||
-//                  opera == "alloc-static" || opera == "alloc-stack")
-//             std::cout << target.to_string() << " = "
-//                       << opera << ", "
-//                       << org_1.to_string();
-//         else
-//             std::cout << target.to_string() << " = "
-//                       << opera << ", "
-//                       << org_1.to_string() << ", "
-//                       << org_2.to_string();
-//     }
-//     else if (ir_type == ir_label) {
-//         std::cout << target.to_string(false) << ":";
-//     }
-//     std::cout << (comment.empty() ? "" : "\t# " + comment)  << std::endl;
-// }
-
-// void IR_node::print_all(const std::shared_ptr<IR_node>& IR_head) {
-//     std::shared_ptr<IR_node> now = IR_head;
-//     if (now == nullptr) return;
-//     now = now->next;
-//     while (now != nullptr) {
-//         now->print();
-//         now = now->next;
-//     }
-// }
-
-// void IR_safe::raise_error(const std::string& error_code) {
-//     std::cout << "IR ERROR: " << error_code << std::endl;
-//     Safe::GlobalError = true;
-// }

@@ -1,11 +1,13 @@
-//
-// Created by Tastror on 2022/5/29.
-//
+/**
+ * @file opt.h
+ * @author Fediory Feng
+ * @brief impl of optimise AST values.
+ * @date 2024/05/02
+ */
 
 #include "opt.h"
 #include <iostream>
 
-// Optimise
 
 void AST_optimize_safe::raise_error(const std::string& error_code) {
     std::cout << "AST Optimize ERROR: " << error_code << std::endl;

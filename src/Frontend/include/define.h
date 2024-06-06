@@ -26,13 +26,13 @@ namespace Debug
     extern std::string lex_path;
     extern std::string sym_path;
     extern std::string AST_path;
+    extern std::string IR_path;
     extern void debug_out(std::string type_path);
 }
 
 enum literal_class
 {
-    literal_int,
-    literal_float
+    literal_int
 };
 
 // basic_function only use in pointer
@@ -267,7 +267,6 @@ public:
 };
 
 // AST_node
-#define AST_PTR std::shared_ptr<AST_node>
 
 enum AST_type
 {
@@ -318,7 +317,7 @@ const std::string AST_type_string_name[] = {
     "Index",
 };
 
-
+#define AST_PTR std::shared_ptr<AST_node>
 
 struct AST_node
 {
@@ -375,53 +374,52 @@ namespace AST_safe
 
 
 
-// // IRGen
+//-------------------------IR Generation----------------------------//
 
-// enum IR_type {
-//     ir_forth, ir_label
-// };
+enum IR_type {
+    ir_forth, ir_label
+};
 
-// struct IR_tuple {
+struct IR_tuple {
 
-//     bool is_name;
-//     std::string name;
-//     identify_value_type_tuple IVTT;
+    bool is_name;
+    std::string name;
+    identify_value_type_tuple IVTT;
 
-//     [[nodiscard]] std::string to_string(bool attribute = true) const;
+    [[nodiscard]] std::string to_string(bool attribute = true) const;
 
-//     IR_tuple();
-//     IR_tuple(const std::string& str, basic_type type = basic_any);
-//     IR_tuple(int int_num);
-//     IR_tuple(double double_num);
-//     IR_tuple(basic_type pointer_represent_type);
-// };
+    IR_tuple();
+    IR_tuple(const std::string& str, basic_type type = basic_any);
+    IR_tuple(int int_num);
+    IR_tuple(basic_type pointer_represent_type);
+};
 
-// struct IR_node {
+struct IR_node {
 
-//     // basic
-//     int index = -1;
-//     IR_type ir_type = ir_label;
-//     std::shared_ptr<IR_node> next = nullptr;
+    // basic
+    int index = -1;
+    IR_type ir_type = ir_label;
+    std::shared_ptr<IR_node> next = nullptr;
 
-//     // normal
-//     IR_tuple target;
+    // normal
+    IR_tuple target;
 
-//     // target: "jump", "call"
-//     // target + org_1: "alloca", "cast-float", "cast-int", "assign", "jumpe", "jumpn", "lw", "sw"
-//     // target + org_1 + org_2: "add", "addf", "sub", "subf", "mul", "mulf", "div", "divf", "mod"
-//     std::string opera;
+    // target: "jump", "call"
+    // target + org_1: "alloca", "cast-int", "assign", "jumpe", "jumpn", "lw", "sw"
+    // target + org_1 + org_2: "add", "addf", "sub", "subf", "mul", "mulf", "div", "divf", "mod"
+    std::string opera;
 
-//     IR_tuple org_1;
-//     IR_tuple org_2;
+    IR_tuple org_1;
+    IR_tuple org_2;
 
-//     std::string comment;
+    std::string comment;
 
-//     virtual void print() const;
-//     static void print_all(const std::shared_ptr<IR_node>& IR_head);
-// };
+    virtual void print() const;
+    static void print_all(const std::shared_ptr<IR_node>& IR_head);
+};
 
-// namespace IR_safe {
-//     void raise_error(const std::string& error_code);
-// }
+namespace IR_safe {
+    void raise_error(const std::string& error_code);
+}
 
-// #define IR_PTR std::shared_ptr<IR_node>
+#define IR_PTR std::shared_ptr<IR_node>

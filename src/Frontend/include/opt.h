@@ -1,12 +1,13 @@
-//
-// Created by Tastror on 2022/5/29.
-//
+/**
+ * @file opt.h
+ * @author Fediory Feng
+ * @brief include in opt.cpp, optimise AST values.
+ * @date 2024/05/02
+ */
 
 #pragma once
-
 #include "define.h"
 
-// Optimise
 
 namespace AST_optimize_safe {
     void raise_error(const std::string& error_code);

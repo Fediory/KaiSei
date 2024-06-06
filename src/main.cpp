@@ -9,7 +9,7 @@
 #include "lexical.h"
 #include "AST.h"
 #include "opt.h"
-// #include "IRGen.h"
+#include "IR.h"
 // #include "CFG.h"
 // #include "ActivityAnalysis.h"
 // #include "AvailableExpression.h"
@@ -94,14 +94,19 @@ int main(int argc, char **argv)
     if (Safe::GlobalError)
         return 0;
 
-    // // 4th-IR Generation
-    // IRGen ir_gen(optimized_AST_head);
-    // ir_gen.Generate();
-    // const IR_PTR& IR_head = ir_gen.head;
-    // if (debug_mode == "ir")
-    //     IR_node::print_all(IR_head);
+    //
+    // IR Generation
+    IR ir(optimized_AST_head);
+    ir.Generate();
+    const IR_PTR& IR_head = ir.head;
+    if (debug_mode == "ir") {
+        IR_node::print_all(IR_head);
+        Debug::debug_out(Debug::IR_path);
+    }
+        
 
-    // if (Safe::GlobalError) return 0;
+    if (Safe::GlobalError) 
+        return 0;
 
     /***************  backend  ***************/
 
