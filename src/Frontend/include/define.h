@@ -27,6 +27,8 @@ namespace Debug
     extern std::string sym_path;
     extern std::string AST_path;
     extern std::string IR_path;
+
+    extern std::string CFG_path;
     extern void debug_out(std::string type_path);
 }
 
@@ -372,15 +374,16 @@ namespace AST_safe
     AST_tuple count_child_number(const std::shared_ptr<AST_node> &now_node);
 }
 
-
-
 //-------------------------IR Generation----------------------------//
 
-enum IR_type {
-    ir_forth, ir_label
+enum IR_type
+{
+    ir_forth,
+    ir_label
 };
 
-struct IR_tuple {
+struct IR_tuple
+{
 
     bool is_name;
     std::string name;
@@ -389,12 +392,13 @@ struct IR_tuple {
     [[nodiscard]] std::string to_string(bool attribute = true) const;
 
     IR_tuple();
-    IR_tuple(const std::string& str, basic_type type = basic_any);
+    IR_tuple(const std::string &str, basic_type type = basic_any);
     IR_tuple(int int_num);
     IR_tuple(basic_type pointer_represent_type);
 };
 
-struct IR_node {
+struct IR_node
+{
 
     // basic
     int index = -1;
@@ -415,11 +419,12 @@ struct IR_node {
     std::string comment;
 
     virtual void print() const;
-    static void print_all(const std::shared_ptr<IR_node>& IR_head);
+    static void print_all(const std::shared_ptr<IR_node> &IR_head);
 };
 
-namespace IR_safe {
-    void raise_error(const std::string& error_code);
+namespace IR_safe
+{
+    void raise_error(const std::string &error_code);
 }
 
 #define IR_PTR std::shared_ptr<IR_node>

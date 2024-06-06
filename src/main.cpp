@@ -10,7 +10,7 @@
 #include "AST.h"
 #include "opt.h"
 #include "IR.h"
-// #include "CFG.h"
+#include "CFG.h"
 // #include "ActivityAnalysis.h"
 // #include "AvailableExpression.h"
 // #include "RegisterAllocate.h"
@@ -47,6 +47,7 @@ int main(int argc, char **argv)
     if (debug_mode == "lex"){
         token_node::print_all(token_head);
         Debug::debug_out(Debug::lex_path);
+        return 0;
     }
         
     if (Safe::GlobalError)
@@ -63,12 +64,14 @@ int main(int argc, char **argv)
     {
         AST_node::print_all(AST_head, 0);
         Debug::debug_out(Debug::AST_path);
+        return 0;
     }
 
     if (debug_mode == "sym")
     {
         Symtable::print_all();
         Debug::debug_out(Debug::sym_path);
+        return 0;
     }
 
     if (Safe::GlobalError)
@@ -83,12 +86,14 @@ int main(int argc, char **argv)
     {
         AST_node::print_all(optimized_AST_head, 0);
         Debug::debug_out(Debug::AST_path);
+        return 0;
     }
 
     if (debug_mode == "optsym")
     {
         Symtable::print_all();
         Debug::debug_out(Debug::sym_path);
+        return 0;
     }
 
     if (Safe::GlobalError)
@@ -102,26 +107,30 @@ int main(int argc, char **argv)
     if (debug_mode == "ir") {
         IR_node::print_all(IR_head);
         Debug::debug_out(Debug::IR_path);
+        return 0;
     }
         
-
     if (Safe::GlobalError) 
         return 0;
 
-    /***************  backend  ***************/
 
-    // // Control Flow Graph
-    // CFG_builder cfg_builder(IR_head);
-    // cfg_builder.Generate();
-    // auto cfg_mul_function_chain = cfg_builder.get_result_function_chain();
-    // auto cfg_mul_static_chain = cfg_builder.get_result_static_chain();
-    // auto cfg_function_name = cfg_builder.get_result_function_name();
-    // if (debug_mode == "cfg") {
-    //     CFG_list::print_all(cfg_mul_static_chain);
-    //     CFG_list::print_all(cfg_mul_function_chain);
-    // }
+    //-------------------------Frontend----------------------------//
 
-    // if (Safe::GlobalError) return 0;
+    // Control Flow Graph
+    CFG_builder cfg_builder(IR_head);
+    cfg_builder.Generate();
+    auto cfg_mul_function_chain = cfg_builder.get_result_function_chain();
+    auto cfg_mul_static_chain = cfg_builder.get_result_static_chain();
+    auto cfg_function_name = cfg_builder.get_result_function_name();
+    if (debug_mode == "cfg") {
+        CFG_list::print_all(cfg_mul_static_chain);
+        CFG_list::print_all(cfg_mul_function_chain);
+        Debug::debug_out(Debug::CFG_path);
+        return 0;
+    }
+
+    if (Safe::GlobalError) 
+        return 0;
 
     // // Live Variable Analysis
     // CFGActivityTab cfgActivityTab;

@@ -67,12 +67,12 @@ void IR_node::print() const
                  opera == "not" ||
                  opera == "alloc-static" || opera == "alloc-stack")
             Debug::debug_output << target.to_string() << " = "
-                      << opera << ","
+                      << opera << ",\t"
                       << org_1.to_string();
         else
             Debug::debug_output << target.to_string() << " = "
-                      << opera << ","
-                      << org_1.to_string() << ","
+                      << opera << ",\t"
+                      << org_1.to_string() << ",\t"
                       << org_2.to_string();
     }
     else if (ir_type == ir_label)

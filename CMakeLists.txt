@@ -9,6 +9,7 @@ set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
 
 include_directories(
         src/Frontend/include/
+        src/Backend/include/
 )
 
 add_executable(KaiSei
@@ -30,4 +31,8 @@ add_executable(KaiSei
 
         src/Frontend/IR/IR.cpp
 
+        # Backend
+        src/Backend/define/CFG_define.cpp
+        
+        src/Backend/opt/CFG.cpp
 )

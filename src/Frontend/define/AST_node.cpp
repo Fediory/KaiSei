@@ -9,12 +9,10 @@
 #include <iostream>
 #include <fstream>
 
-// Parsing: AST_node
-
-
+// AST_node
 
 void AST_node::print_all(const std::shared_ptr<AST_node> &now, int stage)
-{   
+{
     if (now == nullptr)
         return;
     for (int i = 0; i < stage; ++i)

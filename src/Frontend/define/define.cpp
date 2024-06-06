@@ -14,6 +14,7 @@ std::string Debug::lex_path = "./debug/debug.lex";
 std::string Debug::sym_path = "./debug/symtable.sym";
 std::string Debug::AST_path = "./debug/AST.par";
 std::string Debug::IR_path = "./debug/IR.ir";
+std::string Debug::CFG_path = "./debug/debug.cfg";
 std::ofstream Debug::debug_output(Debug::Path);
 
 void Debug::debug_out(std::string type_path)
