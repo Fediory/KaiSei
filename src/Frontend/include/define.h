@@ -18,6 +18,17 @@ namespace Safe
     extern bool GlobalError;
 }
 
+namespace Debug
+{
+    extern std::string Path;
+    extern std::ofstream debug_output;
+
+    extern std::string lex_path;
+    extern std::string sym_path;
+    extern std::string AST_path;
+    extern void debug_out(std::string type_path);
+}
+
 enum literal_class
 {
     literal_int,
@@ -362,11 +373,7 @@ namespace AST_safe
     AST_tuple count_child_number(const std::shared_ptr<AST_node> &now_node);
 }
 
-// // Optimise
 
-// namespace AST_optimize_safe {
-//     void raise_error(const std::string& error_code);
-// }
 
 // // IRGen
 

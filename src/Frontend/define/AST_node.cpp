@@ -10,36 +10,36 @@
 #include <fstream>
 
 // Parsing: AST_node
-std::ofstream AST_output("./debug/AST.par");
+
+
+
 void AST_node::print_all(const std::shared_ptr<AST_node> &now, int stage)
 {   
     if (now == nullptr)
         return;
     for (int i = 0; i < stage; ++i)
-        AST_output << "|\t";
-    AST_output << AST_type_string_name[now->type];
+        Debug::debug_output << "|\t";
+    Debug::debug_output << AST_type_string_name[now->type];
     if (now->using_attribute)
     {
         if (!now->only_name.empty())
-            AST_output << ", only_name: " << now->only_name;
+            Debug::debug_output << ", only_name: " << now->only_name;
         if (now->declaration_bound_sym_node != nullptr)
-            AST_output << ", bound_IVTT: " << now->declaration_bound_sym_node->IVTT.to_string();
+            Debug::debug_output << ", bound_IVTT: " << now->declaration_bound_sym_node->IVTT.to_string();
         else
-            AST_output << ", IVTT: " << now->IVTT.to_string();
+            Debug::debug_output << ", IVTT: " << now->IVTT.to_string();
         if (now->is_const)
-            AST_output << ", is_const";
+            Debug::debug_output << ", is_const";
         if (now->is_static)
-            AST_output << ", is_static";
+            Debug::debug_output << ", is_static";
     }
     if (now->count_expr_ending)
-        AST_output << ", count_expr_ending";
-    AST_output << (now->data.empty() ? "" : ", " + now->data);
-    AST_output << (now->comment.empty() ? "" : " (" + now->comment + ")");
-    AST_output << std::endl;
+        Debug::debug_output << ", count_expr_ending";
+    Debug::debug_output << (now->data.empty() ? "" : ", " + now->data);
+    Debug::debug_output << (now->comment.empty() ? "" : " (" + now->comment + ")");
+    Debug::debug_output << "\n";
     print_all(now->child, stage + 1);
     print_all(now->sister, stage);
-    if (stage == 0)
-        AST_output.close();
 }
 
 void AST_node::connect_child(const std::shared_ptr<AST_node> &parent, const std::shared_ptr<AST_node> &child)

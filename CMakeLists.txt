@@ -28,5 +28,6 @@ add_executable(KaiSei
         src/Frontend/parsing/AST.cpp
         src/Frontend/parsing/expr.cpp
         src/Frontend/parsing/keystmt.cpp
+        src/Frontend/parsing/opt.cpp
 
 )

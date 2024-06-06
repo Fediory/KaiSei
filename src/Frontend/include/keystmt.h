@@ -21,10 +21,11 @@
 // notice:
 // - including ;
 // - self return at ;::after or }::after
-class KeywordStatementAST: public BaseAST {
+class KeywordStatementAST : public BaseAST
+{
 public:
     TOKEN_PTR Parse();
-    explicit KeywordStatementAST(const TOKEN_PTR& token_head, const Symtable& symtable): BaseAST(token_head, symtable) {}
-    explicit KeywordStatementAST(const TOKEN_PTR& token_head, const std::shared_ptr<Symtable>& symtable_ptr): BaseAST(token_head, symtable_ptr) {}
+    explicit KeywordStatementAST(const TOKEN_PTR &token_head, const Symtable &symtable) : BaseAST(token_head, symtable) {}
+    explicit KeywordStatementAST(const TOKEN_PTR &token_head, const std::shared_ptr<Symtable> &symtable_ptr) : BaseAST(token_head, symtable_ptr) {}
     ~KeywordStatementAST() override = default;
 };

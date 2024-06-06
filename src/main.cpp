@@ -8,7 +8,7 @@
 #include "shell.h"
 #include "lexical.h"
 #include "AST.h"
-// #include "FrontOpt.h"
+#include "opt.h"
 // #include "IRGen.h"
 // #include "CFG.h"
 // #include "ActivityAnalysis.h"
@@ -16,6 +16,7 @@
 // #include "RegisterAllocate.h"
 // #include "InstructionAllocate.h"
 
+#include <cstdio>
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -43,36 +44,55 @@ int main(int argc, char **argv)
     Lexical program_file(input_filename);
     program_file.Lexicalize();
     const TOKEN_PTR &token_head = program_file.head;
-    if (debug_mode == "lex")
+    if (debug_mode == "lex"){
         token_node::print_all(token_head);
-
+        Debug::debug_out(Debug::lex_path);
+    }
+        
     if (Safe::GlobalError)
         return 0;
 
+    //
     // AST && Symbol_Table
     Symtable symtable;
     ProgramAST program(token_head, symtable);
     program.Parse();
     const AST_PTR &AST_head = program.head;
-    
+
     if (debug_mode == "parse")
-        AST_node::print_all(AST_head,0);
-        
+    {
+        AST_node::print_all(AST_head, 0);
+        Debug::debug_out(Debug::AST_path);
+    }
+
     if (debug_mode == "sym")
+    {
         Symtable::print_all();
+        Debug::debug_out(Debug::sym_path);
+    }
 
     if (Safe::GlobalError)
         return 0;
 
-    // // Semantic Check && Frontend Optimize
-    // Front::Optimiser::Optimize(AST_head);
-    // const AST_PTR& optimized_AST_head = AST_head;
-    // if (debug_mode == "opt")
-    //     AST_node::print_all(optimized_AST_head);
-    // if (debug_mode == "optsym")
-    //     Symtable::print_all();
+    //
+    // Semantic Check && Frontend Optimize
+    Front::Optimiser::Optimize(AST_head);
+    const AST_PTR &optimized_AST_head = AST_head;
 
-    // if (Safe::GlobalError) return 0;
+    if (debug_mode == "opt")
+    {
+        AST_node::print_all(optimized_AST_head, 0);
+        Debug::debug_out(Debug::AST_path);
+    }
+
+    if (debug_mode == "optsym")
+    {
+        Symtable::print_all();
+        Debug::debug_out(Debug::sym_path);
+    }
+
+    if (Safe::GlobalError)
+        return 0;
 
     // // 4th-IR Generation
     // IRGen ir_gen(optimized_AST_head);

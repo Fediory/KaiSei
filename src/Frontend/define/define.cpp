@@ -9,6 +9,25 @@
 #include <iostream>
 
 bool Safe::GlobalError = false;
+std::string Debug::Path = "./debug/1.txt";
+std::string Debug::lex_path = "./debug/debug.lex";
+std::string Debug::sym_path = "./debug/symtable.sym";
+std::string Debug::AST_path = "./debug/AST.par";
+std::ofstream Debug::debug_output(Debug::Path);
+
+void Debug::debug_out(std::string type_path){
+    Debug::debug_output.close();
+    std::ofstream debug_file(type_path);
+    std::ifstream input_file(Debug::Path);
+    std::string temp;
+
+    while (getline(input_file, temp)) 
+    {
+        debug_file << temp << std::endl;
+    }
+    std::remove(Debug::Path.c_str());
+}
+
 
 std::string literal_value_storage::to_string() const
 {
@@ -312,14 +331,6 @@ void identify_value_type_tuple::array_add(const int &n)
 }
 
 
-
-
-// // Optimise
-
-// void AST_optimize_safe::raise_error(const std::string& error_code) {
-//     std::cout << "AST Optimize ERROR: " << error_code << std::endl;
-//     Safe::GlobalError = true;
-// }
 
 // // IRGen
 

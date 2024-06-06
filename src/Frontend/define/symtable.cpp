@@ -7,9 +7,11 @@
 
 #include "define.h"
 #include <iostream>
+#include <fstream>
 
 
 // Parsing: symtable_node
+
 
 void symtable_node::rename() {
     std::string name_pre = std::to_string(table_id);
@@ -27,14 +29,14 @@ void symtable_node::rename(const std::string& name) {
 void symtable_node::print(const std::shared_ptr<symtable_node>& symtable_node_head) {
     SYM_PTR now = symtable_node_head;
     while (now != nullptr) {
-        if (now->is_head) std::cout << "[head] ";
-        std::cout << "name: " << now->identifier_name;
-        std::cout << ", only_name: " << now->only_name;
-        std::cout << ", IVTT: " << now->IVTT.to_string();
-        if (now->is_const) std::cout << ", is_const";
-        if (now->is_static) std::cout << ", is_static";
-        if (now->treat_as_constexpr) std::cout << ", treat_as_constexpr";
-        std::cout << std::endl;
+        if (now->is_head) Debug::debug_output << "[head] ";
+        Debug::debug_output << "name: " << now->identifier_name;
+        Debug::debug_output << ", only_name: " << now->only_name;
+        Debug::debug_output << ", IVTT: " << now->IVTT.to_string();
+        if (now->is_const) Debug::debug_output << ", is_const";
+        if (now->is_static) Debug::debug_output << ", is_static";
+        if (now->treat_as_constexpr) Debug::debug_output << ", treat_as_constexpr";
+        Debug::debug_output << "\n";
         now = now->next;
     }
 }
@@ -85,6 +87,6 @@ void Symtable::print_chain() const {
 void Symtable::print_all() {
     for (auto& i : Symtable::all_symtable_heads) {
         symtable_node::print(i);
-        std::cout << std::endl;
+        Debug::debug_output << "\n";
     }
 }

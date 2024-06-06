@@ -1,3 +1,5 @@
+DEBUG = arm
+
 clean:
 	@rm -rf build
 	@rm -f KaiSei
@@ -13,8 +15,8 @@ start:
 	@cd build && cmake .. && make
 	@mv build/KaiSei ./KaiSei
 
-lex: 
-	@ ./KaiSei --debug lex ./debug/test.c
+run: 
+	@ ./KaiSei ./debug/test.c --debug $(DEBUG)
 
-parse: 
-	@ ./KaiSei --debug parse ./debug/test.c
+help: 
+	@ ./KaiSei --help

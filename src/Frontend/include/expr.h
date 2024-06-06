@@ -8,7 +8,6 @@
 #pragma once
 #include "AST.h"
 
-
 // examples:
 // a[2 + 4][2]
 //        ^
@@ -16,11 +15,12 @@
 // notice:
 // - including [ ]
 // - self return at ]::after
-class ArrayUsageAST: public BaseAST {
+class ArrayUsageAST : public BaseAST
+{
 public:
     TOKEN_PTR Parse();
-    explicit ArrayUsageAST(const TOKEN_PTR& token_head, const Symtable& symtable): BaseAST(token_head, symtable) {}
-    explicit ArrayUsageAST(const TOKEN_PTR& token_head, const std::shared_ptr<Symtable>& symtable_ptr): BaseAST(token_head, symtable_ptr) {}
+    explicit ArrayUsageAST(const TOKEN_PTR &token_head, const Symtable &symtable) : BaseAST(token_head, symtable) {}
+    explicit ArrayUsageAST(const TOKEN_PTR &token_head, const std::shared_ptr<Symtable> &symtable_ptr) : BaseAST(token_head, symtable_ptr) {}
     ~ArrayUsageAST() override = default;
 };
 
@@ -32,11 +32,12 @@ public:
 // - including ( )
 // - end with )
 // - self return at )::after
-class FunctionUsageAST: public BaseAST {
+class FunctionUsageAST : public BaseAST
+{
 public:
     TOKEN_PTR Parse();
-    explicit FunctionUsageAST(const TOKEN_PTR& token_head, const Symtable& symtable): BaseAST(token_head, symtable) {}
-    explicit FunctionUsageAST(const TOKEN_PTR& token_head, const std::shared_ptr<Symtable>& symtable_ptr): BaseAST(token_head, symtable_ptr) {}
+    explicit FunctionUsageAST(const TOKEN_PTR &token_head, const Symtable &symtable) : BaseAST(token_head, symtable) {}
+    explicit FunctionUsageAST(const TOKEN_PTR &token_head, const std::shared_ptr<Symtable> &symtable_ptr) : BaseAST(token_head, symtable_ptr) {}
     ~FunctionUsageAST() override = default;
 };
 
@@ -48,11 +49,11 @@ public:
 // - no ; , ) } ]
 // - end with ; , ) } ]
 // - self return at ; , ) } ]
-class ExpressionAST: public BaseAST {
+class ExpressionAST : public BaseAST
+{
 public:
     TOKEN_PTR Parse();
-    explicit ExpressionAST(const TOKEN_PTR& token_head, const Symtable& symtable): BaseAST(token_head, symtable) {}
-    explicit ExpressionAST(const TOKEN_PTR& token_head, const std::shared_ptr<Symtable>& symtable_ptr): BaseAST(token_head, symtable_ptr) {}
+    explicit ExpressionAST(const TOKEN_PTR &token_head, const Symtable &symtable) : BaseAST(token_head, symtable) {}
+    explicit ExpressionAST(const TOKEN_PTR &token_head, const std::shared_ptr<Symtable> &symtable_ptr) : BaseAST(token_head, symtable_ptr) {}
     ~ExpressionAST() override = default;
 };
-

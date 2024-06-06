@@ -128,7 +128,6 @@ TOKEN_PTR KeywordStatementAST::Parse()
         }
         GoNext();
     }
-
     else
     {
         AST_safe::raise_error("in KeywordStatement, begin with wrong sign", now_token);

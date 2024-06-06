@@ -11,17 +11,20 @@
 std::vector<SYM_PTR> Symtable::all_symtable_heads;
 int Symtable::table_counts = 0;
 
-TOKEN_PTR SingleAssignmentAST::Parse() {
+TOKEN_PTR SingleAssignmentAST::Parse()
+{
     head->type = SingleAssignment;
 
-    if (token_safe::type(now_token) != IDENT) {
+    if (token_safe::type(now_token) != IDENT)
+    {
         AST_safe::raise_error("in SingleAssignment, beginning is not a valid name", now_token);
         return now_token;
     }
 
     // v --- sym search & attribution --- v //
     SYM_PTR temp_sym_node = AST_safe::search_id_name(token_safe::data(now_token), symtable_ptr);
-    if (temp_sym_node == nullptr) {
+    if (temp_sym_node == nullptr)
+    {
         AST_safe::raise_error("Usage without definition", now_token);
         GoNext(); // ! important
         return now_token;
@@ -36,7 +39,8 @@ TOKEN_PTR SingleAssignmentAST::Parse() {
     var_name->data = token_safe::data(now_token);
     GoNext();
 
-    if (token_safe::data(now_token) != "=") {
+    if (token_safe::data(now_token) != "=")
+    {
         AST_safe::raise_error("in SingleAssignment, lost punctuation [=]", now_token);
         return now_token;
     }
@@ -49,7 +53,8 @@ TOKEN_PTR SingleAssignmentAST::Parse() {
     next_token = token_safe::next(now_token);
 
     // meddle check, may cause error, could be removed
-    if (token_safe::data(now_token) != "," && token_safe::data(now_token) != ";") {
+    if (token_safe::data(now_token) != "," && token_safe::data(now_token) != ";")
+    {
         AST_safe::raise_error("in SingleAssignment, lost punctuation [;] or [,]", now_token);
         return now_token;
     }
@@ -57,18 +62,20 @@ TOKEN_PTR SingleAssignmentAST::Parse() {
     return now_token;
 }
 
-
-TOKEN_PTR ArrayAssignmentAST::Parse() {
+TOKEN_PTR ArrayAssignmentAST::Parse()
+{
     head->type = ArrayAssignment;
 
-    if (token_safe::type(now_token) != IDENT) {
+    if (token_safe::type(now_token) != IDENT)
+    {
         AST_safe::raise_error("in ArrayAssignment, beginning is not a valid name", now_token);
         return now_token;
     }
 
     // v --- sym search & attribution --- v //
     SYM_PTR temp_sym_node = AST_safe::search_id_name(token_safe::data(now_token), symtable_ptr);
-    if (temp_sym_node == nullptr) {
+    if (temp_sym_node == nullptr)
+    {
         AST_safe::raise_error("Usage without definition", now_token);
         GoNext(); // ! important
         return now_token;
@@ -83,7 +90,8 @@ TOKEN_PTR ArrayAssignmentAST::Parse() {
     var_name->data = token_safe::data(now_token);
     GoNext();
 
-    if (token_safe::data(now_token) != "[") {
+    if (token_safe::data(now_token) != "[")
+    {
         AST_safe::raise_error("in ArrayAssignment, lost punctuation [[]", now_token);
         return now_token;
     }
@@ -100,13 +108,15 @@ TOKEN_PTR ArrayAssignmentAST::Parse() {
     now_token = index.Parse();
     next_token = token_safe::next(now_token);
 
-    if (token_safe::data(now_token) != "]") {
+    if (token_safe::data(now_token) != "]")
+    {
         AST_safe::raise_error("in ArrayAssignment, lost punctuation []]", now_token);
         return now_token;
     }
     GoNext();
 
-    while (token_safe::data(now_token) == "[") {
+    while (token_safe::data(now_token) == "[")
+    {
         GoNext();
 
         ExpressionAST index_addi(now_token, symtable_ptr);
@@ -116,14 +126,16 @@ TOKEN_PTR ArrayAssignmentAST::Parse() {
         now_token = index_addi.Parse();
         next_token = token_safe::next(now_token);
 
-        if (token_safe::data(now_token) != "]") {
+        if (token_safe::data(now_token) != "]")
+        {
             AST_safe::raise_error("in ArrayAssignment, lost punctuation []]", now_token);
             return now_token;
         }
         GoNext();
     }
 
-    if (token_safe::data(now_token) != "=") {
+    if (token_safe::data(now_token) != "=")
+    {
         AST_safe::raise_error("in ArrayAssignment, lost punctuation [=]", now_token);
         return now_token;
     }
@@ -136,7 +148,8 @@ TOKEN_PTR ArrayAssignmentAST::Parse() {
     next_token = token_safe::next(now_token);
 
     // meddle check, may cause error, could be removed
-    if (token_safe::data(now_token) != "," && token_safe::data(now_token) != ";") {
+    if (token_safe::data(now_token) != "," && token_safe::data(now_token) != ";")
+    {
         AST_safe::raise_error("in ArrayAssignment, lost punctuation [;] or [,]", now_token);
         return now_token;
     }
@@ -144,11 +157,12 @@ TOKEN_PTR ArrayAssignmentAST::Parse() {
     return now_token;
 }
 
-
-TOKEN_PTR SingleDefinitionAST::Parse() {
+TOKEN_PTR SingleDefinitionAST::Parse()
+{
     head->type = SingleDefinition;
 
-    if (token_safe::type(now_token) != IDENT) {
+    if (token_safe::type(now_token) != IDENT)
+    {
         AST_safe::raise_error("in SingleDefinition, beginning is not a valid name", now_token);
         return now_token;
     }
@@ -158,7 +172,8 @@ TOKEN_PTR SingleDefinitionAST::Parse() {
     var_name->data = token_safe::data(now_token);
     GoNext();
 
-    if (token_safe::data(now_token) == "=") {
+    if (token_safe::data(now_token) == "=")
+    {
         GoNext();
 
         ExpressionAST expr(now_token, symtable_ptr);
@@ -169,7 +184,8 @@ TOKEN_PTR SingleDefinitionAST::Parse() {
     }
 
     // meddle check, may cause error, could be removed
-    if (token_safe::data(now_token) != "," && token_safe::data(now_token) != ";") {
+    if (token_safe::data(now_token) != "," && token_safe::data(now_token) != ";")
+    {
         AST_safe::raise_error("in SingleDefinition, lost punctuation [;] or [,]", now_token);
         return now_token;
     }
@@ -177,29 +193,33 @@ TOKEN_PTR SingleDefinitionAST::Parse() {
     return now_token;
 }
 
-
-TOKEN_PTR ArrayInitialBlockAST::Parse() {
+TOKEN_PTR ArrayInitialBlockAST::Parse()
+{
     head->type = ArrayInitialBlock;
 
-    if (token_safe::data(now_token) != "{") {
+    if (token_safe::data(now_token) != "{")
+    {
         AST_safe::raise_error("in ArrayInitialBlock, lost punctuation [{]", now_token);
         return now_token;
     }
     GoNext();
 
-    if (token_safe::data(now_token) == "}") {
+    if (token_safe::data(now_token) == "}")
+    {
         GoNext();
         return now_token;
     }
 
-    else if (token_safe::data(now_token) == "{") {
+    else if (token_safe::data(now_token) == "{")
+    {
         ArrayInitialBlockAST recur_array_init(now_token, symtable_ptr);
         AST_node::connect_child(head, recur_array_init.head);
         now_token = recur_array_init.Parse();
         next_token = token_safe::next(now_token);
     }
 
-    else {
+    else
+    {
         ExpressionAST index(now_token, symtable_ptr);
         AST_node::connect_child(head, index.head);
         index.head->data = "value";
@@ -207,44 +227,49 @@ TOKEN_PTR ArrayInitialBlockAST::Parse() {
         next_token = token_safe::next(now_token);
     }
 
-    while (true) {
+    while (true)
+    {
 
-        if (token_safe::data(now_token) == "}") {
+        if (token_safe::data(now_token) == "}")
+        {
             GoNext();
             break;
         }
 
-        else if (token_safe::data(now_token) != ",") {
+        else if (token_safe::data(now_token) != ",")
+        {
             AST_safe::raise_error("in ArrayInitialBlock, punctuation should be [{] or [,]", now_token);
             return now_token;
         }
         GoNext();
 
-        if (token_safe::data(now_token) == "{") {
+        if (token_safe::data(now_token) == "{")
+        {
             ArrayInitialBlockAST recur_array_init(now_token, symtable_ptr);
             AST_node::connect_child(head, recur_array_init.head);
             now_token = recur_array_init.Parse();
             next_token = token_safe::next(now_token);
         }
 
-        else {
+        else
+        {
             ExpressionAST index(now_token, symtable_ptr);
             AST_node::connect_child(head, index.head);
             index.head->data = "value";
             now_token = index.Parse();
             next_token = token_safe::next(now_token);
         }
-
     }
 
     return now_token;
 }
 
-
-TOKEN_PTR ArrayDefinitionAST::Parse() {
+TOKEN_PTR ArrayDefinitionAST::Parse()
+{
     head->type = ArrayDefinition;
 
-    if (token_safe::type(now_token) != IDENT) {
+    if (token_safe::type(now_token) != IDENT)
+    {
         AST_safe::raise_error("in ArrayDefinition, beginning is not a valid name", now_token);
         return now_token;
     }
@@ -254,7 +279,8 @@ TOKEN_PTR ArrayDefinitionAST::Parse() {
     var_name->data = token_safe::data(now_token);
     GoNext();
 
-    if (token_safe::data(now_token) != "[") {
+    if (token_safe::data(now_token) != "[")
+    {
         AST_safe::raise_error("in ArrayDefinition, lost punctuation [[]", now_token);
         return now_token;
     }
@@ -276,13 +302,15 @@ TOKEN_PTR ArrayDefinitionAST::Parse() {
     now_token = index.Parse();
     next_token = token_safe::next(now_token);
 
-    if (token_safe::data(now_token) != "]") {
+    if (token_safe::data(now_token) != "]")
+    {
         AST_safe::raise_error("in ArrayDefinition, lost punctuation []]", now_token);
         return now_token;
     }
     GoNext();
 
-    while (token_safe::data(now_token) == "[") {
+    while (token_safe::data(now_token) == "[")
+    {
 
         // v --- sym change --- v //
         symtable_ptr->my_tail->IVTT.self_add_nest();
@@ -297,14 +325,16 @@ TOKEN_PTR ArrayDefinitionAST::Parse() {
         now_token = index_addi.Parse();
         next_token = token_safe::next(now_token);
 
-        if (token_safe::data(now_token) != "]") {
+        if (token_safe::data(now_token) != "]")
+        {
             AST_safe::raise_error("in ArrayDefinition, lost punctuation []]", now_token);
             return now_token;
         }
         GoNext();
     }
 
-    if (token_safe::data(now_token) == "=") {
+    if (token_safe::data(now_token) == "=")
+    {
         GoNext();
 
         ArrayInitialBlockAST array_init(now_token, symtable_ptr);
@@ -314,7 +344,8 @@ TOKEN_PTR ArrayDefinitionAST::Parse() {
     }
 
     // meddle check, may cause error, could be removed
-    if (token_safe::data(now_token) != "," && token_safe::data(now_token) != ";") {
+    if (token_safe::data(now_token) != "," && token_safe::data(now_token) != ";")
+    {
         AST_safe::raise_error("in Definition, lost punctuation [;] or [,]", now_token);
         return now_token;
     }
@@ -322,8 +353,8 @@ TOKEN_PTR ArrayDefinitionAST::Parse() {
     return now_token;
 }
 
-
-TOKEN_PTR DeclarationStatementAST::Parse() {
+TOKEN_PTR DeclarationStatementAST::Parse()
+{
     head->type = DeclarationStatement;
 
     // v --- sym --- v //
@@ -331,12 +362,14 @@ TOKEN_PTR DeclarationStatementAST::Parse() {
     placeholder_sym_node.is_static = head->is_static;
     // ^ --- sym --- ^ //
 
-    if (token_safe::data(now_token) != "const" && token_safe::data(now_token) != "int") {
+    if (token_safe::data(now_token) != "const" && token_safe::data(now_token) != "int")
+    {
         AST_safe::raise_error("in DeclarationStatement, beginning is not [const] or [int]", now_token);
         return now_token;
     }
 
-    if (token_safe::data(now_token) == "const") {
+    if (token_safe::data(now_token) == "const")
+    {
         head->data = "const";
 
         // v --- sym change --- v //
@@ -346,7 +379,8 @@ TOKEN_PTR DeclarationStatementAST::Parse() {
         GoNext();
     }
 
-    if (token_safe::data(now_token) != "int") {
+    if (token_safe::data(now_token) != "int")
+    {
         AST_safe::raise_error("in DeclarationStatement, type is not [int]", now_token);
         return now_token;
     }
@@ -362,11 +396,13 @@ TOKEN_PTR DeclarationStatementAST::Parse() {
 
     GoNext();
 
-    if (token_safe::type(now_token) == IDENT) {
+    if (token_safe::type(now_token) == IDENT)
+    {
 
         // v --- sym search --- v //
         SYM_PTR temp_sym_node = AST_safe::search_id_name(token_safe::data(now_token), symtable_ptr, true);
-        if (temp_sym_node != nullptr) {
+        if (temp_sym_node != nullptr)
+        {
             AST_safe::raise_error("Redefinition", now_token);
             return now_token;
         }
@@ -380,7 +416,8 @@ TOKEN_PTR DeclarationStatementAST::Parse() {
         sym_node.IVTT = placeholder_sym_node.IVTT;
         // ^ --- sym --- ^ //
 
-        if (token_safe::data(next_token) == "[") {
+        if (token_safe::data(next_token) == "[")
+        {
 
             // v --- sym change --- v //
             sym_node.IVTT.self_change_to_pointer();
@@ -401,7 +438,8 @@ TOKEN_PTR DeclarationStatementAST::Parse() {
             // ^ --- sym attribute --- ^ //
         }
 
-        else {
+        else
+        {
 
             SingleDefinitionAST single_def(now_token, symtable_ptr);
             AST_node::connect_child(head, single_def.head);
@@ -416,32 +454,39 @@ TOKEN_PTR DeclarationStatementAST::Parse() {
         }
     }
 
-    else {
+    else
+    {
         AST_safe::raise_error("in DeclarationStatement, missing identify name", now_token);
         return now_token;
     }
 
-    while (true) {
+    while (true)
+    {
 
-        if (token_safe::data(now_token) == ";") {
+        if (token_safe::data(now_token) == ";")
+        {
             GoNext();
             break;
         }
 
-        else if (token_safe::data(now_token) == ",") {
+        else if (token_safe::data(now_token) == ",")
+        {
             GoNext();
         }
 
-        else {
+        else
+        {
             AST_safe::raise_error("in DeclarationStatement, separate punctuation should be [,]", now_token);
             return now_token;
         }
 
-        if (token_safe::type(now_token) == IDENT) {
+        if (token_safe::type(now_token) == IDENT)
+        {
 
             // v --- sym search --- v //
             SYM_PTR temp_sym_node = AST_safe::search_id_name(token_safe::data(now_token), symtable_ptr, true);
-            if (temp_sym_node != nullptr) {
+            if (temp_sym_node != nullptr)
+            {
                 AST_safe::raise_error("Redefinition", now_token);
                 return now_token;
             }
@@ -455,7 +500,8 @@ TOKEN_PTR DeclarationStatementAST::Parse() {
             sym_node.IVTT = placeholder_sym_node.IVTT;
             // ^ --- sym --- ^ //
 
-            if (token_safe::data(next_token) == "[") {
+            if (token_safe::data(next_token) == "[")
+            {
 
                 // v --- sym change --- v //
                 sym_node.IVTT.self_change_to_pointer();
@@ -476,7 +522,8 @@ TOKEN_PTR DeclarationStatementAST::Parse() {
                 // ^ --- sym attribute --- ^ //
             }
 
-            else {
+            else
+            {
 
                 SingleDefinitionAST single_def(now_token, symtable_ptr);
                 AST_node::connect_child(head, single_def.head);
@@ -491,41 +538,46 @@ TOKEN_PTR DeclarationStatementAST::Parse() {
             }
         }
 
-        else {
+        else
+        {
             AST_safe::raise_error("in DeclarationStatement, missing identify name", now_token);
             return now_token;
         }
-
     }
     return now_token;
 }
 
-
-TOKEN_PTR NormalStatementAST::Parse() {
+TOKEN_PTR NormalStatementAST::Parse()
+{
     head->type = NormalStatement;
 
-    if (token_safe::type(now_token) == IDENT && token_safe::search_data(next_token, "=", ";")) {
+    if (token_safe::type(now_token) == IDENT && token_safe::search_data(next_token, "=", ";"))
+    {
 
-        if (token_safe::data(next_token) == "[") {
+        if (token_safe::data(next_token) == "[")
+        {
             ArrayAssignmentAST assi(now_token, symtable_ptr);
             AST_node::connect_child(head, assi.head);
             now_token = assi.Parse();
             next_token = token_safe::next(now_token);
 
-            if (token_safe::data(now_token) != ";") {
+            if (token_safe::data(now_token) != ";")
+            {
                 AST_safe::raise_error("in NormalStatement, lost punctuation [;]", now_token);
                 return now_token;
             }
             GoNext();
         }
 
-        else {
+        else
+        {
             SingleAssignmentAST assi(now_token, symtable_ptr);
             AST_node::connect_child(head, assi.head);
             now_token = assi.Parse();
             next_token = token_safe::next(now_token);
 
-            if (token_safe::data(now_token) != ";") {
+            if (token_safe::data(now_token) != ";")
+            {
                 AST_safe::raise_error("in NormalStatement, lost punctuation [;]", now_token);
                 return now_token;
             }
@@ -533,7 +585,8 @@ TOKEN_PTR NormalStatementAST::Parse() {
         }
     }
 
-    else if (token_safe::data(now_token) == "{") {
+    else if (token_safe::data(now_token) == "{")
+    {
 
         // v --- sym block --- v //
         Symtable block_symtable;
@@ -547,26 +600,29 @@ TOKEN_PTR NormalStatementAST::Parse() {
         next_token = token_safe::next(now_token);
     }
 
-    else if (token_safe::type(now_token) == KEYWORD) {
+    else if (token_safe::type(now_token) == KEYWORD)
+    {
 
         std::string now_data = token_safe::data(now_token);
         if (now_data == "if" || now_data == "while" || now_data == "break" ||
-            now_data == "continue" || now_data == "return") {
+            now_data == "continue" || now_data == "return")
+        {
             KeywordStatementAST key_stmt(now_token, symtable_ptr);
             AST_node::connect_child(head, key_stmt.head);
             now_token = key_stmt.Parse();
             next_token = token_safe::next(now_token);
         }
 
-        else {
+        else
+        {
             AST_safe::raise_error("in NormalStatement, begin with wrong sign", now_token);
-            GoNext();  // !important, to avoid circle in normal statement
+            GoNext(); // !important, to avoid circle in normal statement
             return now_token;
         }
-
     }
 
-    else if (token_safe::type(now_token) == NUMBER || token_safe::type(now_token) == IDENT) {
+    else if (token_safe::type(now_token) == NUMBER || token_safe::type(now_token) == IDENT)
+    {
 
         ExpressionAST expr(now_token, symtable_ptr);
         AST_node::connect_child(head, expr.head);
@@ -575,38 +631,43 @@ TOKEN_PTR NormalStatementAST::Parse() {
         now_token = expr.Parse();
         next_token = token_safe::next(now_token);
 
-        if (token_safe::data(now_token) != ";") {
+        if (token_safe::data(now_token) != ";")
+        {
             AST_safe::raise_error("in NormalStatement, lost punctuation [;]", now_token);
             return now_token;
         }
         GoNext();
     }
 
-    else if (token_safe::data(now_token) == ";") {
+    else if (token_safe::data(now_token) == ";")
+    {
         GoNext();
     }
 
-    else {
+    else
+    {
         AST_safe::raise_error("in NormalStatement, begin with wrong sign", now_token);
-        GoNext();  // !important, to avoid circle in normal statement
+        GoNext(); // !important, to avoid circle in normal statement
         return now_token;
     }
 
     return now_token;
 }
 
-
-TOKEN_PTR StatementAST::Parse() {
+TOKEN_PTR StatementAST::Parse()
+{
     head->type = Statement;
 
-    if (token_safe::data(now_token) == "int" || token_safe::data(now_token) == "const") {
+    if (token_safe::data(now_token) == "int" || token_safe::data(now_token) == "const")
+    {
         DeclarationStatementAST decl_stmt(now_token, symtable_ptr);
         AST_node::connect_child(head, decl_stmt.head);
         now_token = decl_stmt.Parse();
         next_token = token_safe::next(now_token);
     }
 
-    else if (token_safe::data(now_token) != "}" && now_token != nullptr) {
+    else if (token_safe::data(now_token) != "}" && now_token != nullptr)
+    {
         NormalStatementAST norm_stmt(now_token, symtable_ptr);
         AST_node::connect_child(head, norm_stmt.head);
         now_token = norm_stmt.Parse();
@@ -616,31 +677,36 @@ TOKEN_PTR StatementAST::Parse() {
     return now_token;
 }
 
-
-TOKEN_PTR BlockStatementAST::Parse() {
+TOKEN_PTR BlockStatementAST::Parse()
+{
     head->type = BlockStatement;
 
-    if (token_safe::data(now_token) != "{") {
+    if (token_safe::data(now_token) != "{")
+    {
         AST_safe::raise_error("in BlockStatement, beginning is not [{]", now_token);
         return now_token;
     }
     GoNext();
 
-    while (true) {
+    while (true)
+    {
 
-        if (token_safe::data(now_token) != "}" && now_token != nullptr) {
+        if (token_safe::data(now_token) != "}" && now_token != nullptr)
+        {
             StatementAST stmt(now_token, symtable_ptr);
             AST_node::connect_child(head, stmt.head);
             now_token = stmt.Parse();
             next_token = token_safe::next(now_token);
         }
 
-        else if (token_safe::data(now_token) == "}") {
+        else if (token_safe::data(now_token) == "}")
+        {
             GoNext();
             break;
         }
 
-        else {
+        else
+        {
             AST_safe::raise_error("in BlockStatement, ending is not [}]", now_token);
             return now_token;
         }
@@ -649,15 +715,16 @@ TOKEN_PTR BlockStatementAST::Parse() {
     return now_token;
 }
 
-
-TOKEN_PTR FunctionFormParamAST::Parse() {
+TOKEN_PTR FunctionFormParamAST::Parse()
+{
     head->type = FunctionFormParam;
 
     // v --- sym --- v //
     symtable_node sym_node;
     // ^ --- sym --- ^ //
 
-    if (token_safe::data(now_token) != "int") {
+    if (token_safe::data(now_token) != "int")
+    {
         AST_safe::raise_error("in FunctionFormParam, type is not [int]", now_token);
         return now_token;
     }
@@ -673,14 +740,16 @@ TOKEN_PTR FunctionFormParamAST::Parse() {
 
     GoNext();
 
-    if (token_safe::type(now_token) != IDENT) {
+    if (token_safe::type(now_token) != IDENT)
+    {
         AST_safe::raise_error("in FunctionFormParam, identify name is not valid", now_token);
         return now_token;
     }
 
     // v --- sym search --- v //
     SYM_PTR temp_sym_node = AST_safe::search_id_name(token_safe::data(now_token), symtable_ptr, true);
-    if (temp_sym_node != nullptr) {
+    if (temp_sym_node != nullptr)
+    {
         AST_safe::raise_error("Redefinition", now_token);
         return now_token;
     }
@@ -700,7 +769,8 @@ TOKEN_PTR FunctionFormParamAST::Parse() {
     symtable_ptr->append(sym_node);
     // ^ --- sym append --- ^ //
 
-    if (token_safe::data(now_token) == "[") {
+    if (token_safe::data(now_token) == "[")
+    {
 
         AST_PTR index_ast = std::make_shared<AST_node>();
         AST_node::connect_child(head, index_ast);
@@ -713,13 +783,15 @@ TOKEN_PTR FunctionFormParamAST::Parse() {
 
         GoNext();
 
-        if (token_safe::data(now_token) == "]") {
+        if (token_safe::data(now_token) == "]")
+        {
             AST_PTR empty = std::make_shared<AST_node>();
             AST_node::connect_child(index_ast, empty);
             empty->type = Expression;
             GoNext();
         }
-        else {
+        else
+        {
             ExpressionAST index(now_token, symtable_ptr);
             AST_node::connect_child(index_ast, index.head);
             index.head->data = "value";
@@ -727,14 +799,16 @@ TOKEN_PTR FunctionFormParamAST::Parse() {
             now_token = index.Parse();
             next_token = token_safe::next(now_token);
 
-            if (token_safe::data(now_token) != "]") {
+            if (token_safe::data(now_token) != "]")
+            {
                 AST_safe::raise_error("in FunctionFormParam, lost punctuation []]", now_token);
                 return now_token;
             }
             GoNext();
         }
 
-        while (token_safe::data(now_token) == "[") {
+        while (token_safe::data(now_token) == "[")
+        {
 
             // v --- sym change --- v //
             symtable_ptr->my_tail->IVTT.self_add_nest();
@@ -749,7 +823,8 @@ TOKEN_PTR FunctionFormParamAST::Parse() {
             now_token = index_addi.Parse();
             next_token = token_safe::next(now_token);
 
-            if (token_safe::data(now_token) != "]") {
+            if (token_safe::data(now_token) != "]")
+            {
                 AST_safe::raise_error("in FunctionFormParam, lost punctuation []]", now_token);
                 return now_token;
             }
@@ -766,11 +841,12 @@ TOKEN_PTR FunctionFormParamAST::Parse() {
     return now_token;
 }
 
-
-TOKEN_PTR FunctionParamsAST::Parse() {
+TOKEN_PTR FunctionParamsAST::Parse()
+{
     head->type = FunctionParams;
 
-    if (token_safe::data(now_token) == ")") {
+    if (token_safe::data(now_token) == ")")
+    {
         return now_token;
     }
 
@@ -779,13 +855,16 @@ TOKEN_PTR FunctionParamsAST::Parse() {
     now_token = func_param.Parse();
     next_token = token_safe::next(now_token);
 
-    while (true) {
+    while (true)
+    {
 
-        if (token_safe::data(now_token) == ")") {
+        if (token_safe::data(now_token) == ")")
+        {
             break;
         }
 
-        if (token_safe::data(now_token) != ",") {
+        if (token_safe::data(now_token) != ",")
+        {
             AST_safe::raise_error("in FunctionParams, punctuation should be [,] or [)]", now_token);
             return now_token;
         }
@@ -795,14 +874,13 @@ TOKEN_PTR FunctionParamsAST::Parse() {
         AST_node::connect_child(head, addi_func_param.head);
         now_token = addi_func_param.Parse();
         next_token = token_safe::next(now_token);
-
     }
 
     return now_token;
 }
 
-
-TOKEN_PTR FunctionDefinitionAST::Parse() {
+TOKEN_PTR FunctionDefinitionAST::Parse()
+{
     head->type = FunctionDefinition;
 
     // v --- sym --- v //
@@ -815,7 +893,8 @@ TOKEN_PTR FunctionDefinitionAST::Parse() {
     func_block_symtable.extend_from(symtable_ptr);
     // ^ --- sym block --- ^ //
 
-    if (token_safe::data(now_token) != "int" && token_safe::data(now_token) != "void") {
+    if (token_safe::data(now_token) != "int" && token_safe::data(now_token) != "void")
+    {
         AST_safe::raise_error("in FunctionDefinition, type is not [int] or [void]", now_token);
         return now_token;
     }
@@ -826,14 +905,16 @@ TOKEN_PTR FunctionDefinitionAST::Parse() {
 
     GoNext();
 
-    if (token_safe::type(now_token) != IDENT) {
+    if (token_safe::type(now_token) != IDENT)
+    {
         AST_safe::raise_error("in FunctionDefinition, function name is not a valid name", now_token);
         return now_token;
     }
 
     // v --- sym search --- v //
     SYM_PTR temp_sym_node = AST_safe::search_id_name(token_safe::data(now_token), symtable_ptr, true);
-    if (temp_sym_node != nullptr) {
+    if (temp_sym_node != nullptr)
+    {
         AST_safe::raise_error("Redefinition", now_token);
         return now_token;
     }
@@ -853,7 +934,8 @@ TOKEN_PTR FunctionDefinitionAST::Parse() {
 
     GoNext();
 
-    if (token_safe::data(now_token) != "(") {
+    if (token_safe::data(now_token) != "(")
+    {
         AST_safe::raise_error("in FunctionDefinition, lost punctuation [(]", now_token);
         return now_token;
     }
@@ -874,7 +956,8 @@ TOKEN_PTR FunctionDefinitionAST::Parse() {
     head->declaration_bound_sym_node = symtable_ptr->my_tail;
     // ^ --- sym append & attribute --- ^ //
 
-    if (token_safe::data(now_token) != ")") {
+    if (token_safe::data(now_token) != ")")
+    {
         AST_safe::raise_error("in FunctionDefinition, lost punctuation [)]", now_token);
         return now_token;
     }
@@ -889,28 +972,34 @@ TOKEN_PTR FunctionDefinitionAST::Parse() {
     return now_token;
 }
 
-
-TOKEN_PTR ProgramAST::Parse() {
+TOKEN_PTR ProgramAST::Parse()
+{
     head->type = ProgramBody;
 
     symtable_ptr->my_head->rename("this_program");
 
-    while (now_token != nullptr) {
+    while (now_token != nullptr)
+    {
 
         // in all ASTs, GlobalError only use here
-        if (Safe::GlobalError) { break; }
+        if (Safe::GlobalError)
+        {
+            break;
+        }
 
         TOKEN_PTR look_next = token_safe::next(next_token);
 
         if (token_safe::data(now_token) == "void" ||
-           (token_safe::data(now_token) == "int" && token_safe::data(look_next) == "(") ) {
+            (token_safe::data(now_token) == "int" && token_safe::data(look_next) == "("))
+        {
             FunctionDefinitionAST func_def(now_token, symtable_ptr);
             AST_node::connect_child(head, func_def.head);
             now_token = func_def.Parse();
             next_token = token_safe::next(now_token);
         }
 
-        else if (token_safe::data(now_token) == "int" || token_safe::data(now_token) == "const") {
+        else if (token_safe::data(now_token) == "int" || token_safe::data(now_token) == "const")
+        {
             DeclarationStatementAST stmt(now_token, symtable_ptr);
             AST_node::connect_child(head, stmt.head);
             stmt.head->is_static = true;
@@ -918,7 +1007,8 @@ TOKEN_PTR ProgramAST::Parse() {
             next_token = token_safe::next(now_token);
         }
 
-        else {
+        else
+        {
             AST_safe::raise_error("in ProgramAST, beginning must be a keyword [int] [void] or [const]", now_token);
             break;
         }

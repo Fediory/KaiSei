@@ -58,7 +58,6 @@ int compare(const std::string &op1, const std::string &op2)
     return a - b;
 }
 
-
 TOKEN_PTR ArrayUsageAST::Parse()
 {
     head->type = ArrayUsage;
@@ -323,7 +322,7 @@ TOKEN_PTR ExpressionAST::Parse()
                     token_to_AST->type = Identifier;
                     sym.push(token_to_AST);
 
-                    // v --- sym search & attribution --- v //
+                    // vvv --- sym search & attribution --- vvv //
                     SYM_PTR temp_sym_node = AST_safe::search_id_name(token_safe::data(now_token), symtable_ptr);
                     if (temp_sym_node == nullptr)
                     {
@@ -333,7 +332,7 @@ TOKEN_PTR ExpressionAST::Parse()
                     }
                     token_to_AST->absorb_sym_attribution(temp_sym_node);
                     token_to_AST->declaration_bound_sym_node = temp_sym_node;
-                    // ^ --- sym search & attribution --- ^ //
+                    // ^^^ --- sym search & attribution --- ^^^ //
 
                     GoNext();
                 }

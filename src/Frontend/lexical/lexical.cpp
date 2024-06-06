@@ -65,16 +65,14 @@ bool token_safe::search_data(std::shared_ptr<token_node> now, const std::string 
 void token_node::print_all(const std::shared_ptr<token_node> &head)
 {
     std::shared_ptr<token_node> now(head);
-    std::ofstream outputFile("./debug/debug.lex");
     while (now != nullptr)
     {
-        outputFile << token_type_string_name[now->type] << now->line << ", " << now->column << ", " << now->data;
+        Debug::debug_output << token_type_string_name[now->type] << now->line << ", " << now->column << ", " << now->data;
         if (now->type == NUMBER)
         {
-            outputFile << ", " << now->IVTT.to_string();
+            Debug::debug_output << ", " << now->IVTT.to_string();
         }
-        outputFile << "\n";
+        Debug::debug_output << "\n";
         now = now->next;
     }
-    outputFile.close();
 }
