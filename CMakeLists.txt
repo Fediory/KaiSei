@@ -33,6 +33,8 @@ add_executable(KaiSei
 
         # Backend
         src/Backend/define/CFG_define.cpp
+        src/Backend/define/LVA_define.cpp
         
         src/Backend/opt/CFG.cpp
+        src/Backend/opt/LVA.cpp
 )

@@ -11,7 +11,7 @@
 #include "opt.h"
 #include "IR.h"
 #include "CFG.h"
-// #include "ActivityAnalysis.h"
+#include "LVA.h"
 // #include "AvailableExpression.h"
 // #include "RegisterAllocate.h"
 // #include "InstructionAllocate.h"
@@ -44,12 +44,13 @@ int main(int argc, char **argv)
     Lexical program_file(input_filename);
     program_file.Lexicalize();
     const TOKEN_PTR &token_head = program_file.head;
-    if (debug_mode == "lex"){
+    if (debug_mode == "lex")
+    {
         token_node::print_all(token_head);
         Debug::debug_out(Debug::lex_path);
         return 0;
     }
-        
+
     if (Safe::GlobalError)
         return 0;
 
@@ -103,16 +104,16 @@ int main(int argc, char **argv)
     // IR Generation
     IR ir(optimized_AST_head);
     ir.Generate();
-    const IR_PTR& IR_head = ir.head;
-    if (debug_mode == "ir") {
+    const IR_PTR &IR_head = ir.head;
+    if (debug_mode == "ir")
+    {
         IR_node::print_all(IR_head);
         Debug::debug_out(Debug::IR_path);
         return 0;
     }
-        
-    if (Safe::GlobalError) 
-        return 0;
 
+    if (Safe::GlobalError)
+        return 0;
 
     //-------------------------Frontend----------------------------//
 
@@ -122,24 +123,29 @@ int main(int argc, char **argv)
     auto cfg_mul_function_chain = cfg_builder.get_result_function_chain();
     auto cfg_mul_static_chain = cfg_builder.get_result_static_chain();
     auto cfg_function_name = cfg_builder.get_result_function_name();
-    if (debug_mode == "cfg") {
+    if (debug_mode == "cfg")
+    {
         CFG_list::print_all(cfg_mul_static_chain);
         CFG_list::print_all(cfg_mul_function_chain);
         Debug::debug_out(Debug::CFG_path);
         return 0;
     }
 
-    if (Safe::GlobalError) 
+    if (Safe::GlobalError)
         return 0;
 
-    // // Live Variable Analysis
-    // CFGActivityTab cfgActivityTab;
-    // for (auto& [name, mul_block_chain] : cfg_mul_function_chain)
-    //     cfgActivityTab.AnalyzeBlockVariables(mul_block_chain);
-    // if (debug_mode == "aa")
-    //     CFGActivityTab::print_all(cfg_mul_function_chain);
+    // Live Variable Analysis
+    BlockVariableFactory block_variable_factory;
+    for (auto &[name, mul_block_chain] : cfg_mul_function_chain)
+        block_variable_factory.analyze_block_variables(mul_block_chain);
 
-    // if (Safe::GlobalError) return 0;
+    if (debug_mode == "lva"){
+        BlockVariableFactory::print_all(cfg_mul_function_chain);
+        Debug::debug_out(Debug::LVA_path);
+    }
+        
+    if (Safe::GlobalError)
+        return 0;
 
     // // Register Allocation
     // RegisterAllocator RegAllo(

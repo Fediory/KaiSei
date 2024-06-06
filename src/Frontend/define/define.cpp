@@ -10,11 +10,12 @@
 
 bool Safe::GlobalError = false;
 std::string Debug::Path = "./debug/1.txt";
-std::string Debug::lex_path = "./debug/debug.lex";
-std::string Debug::sym_path = "./debug/symtable.sym";
-std::string Debug::AST_path = "./debug/AST.par";
-std::string Debug::IR_path = "./debug/IR.ir";
-std::string Debug::CFG_path = "./debug/debug.cfg";
+std::string Debug::lex_path = "./debug/1_lexical.lex";
+std::string Debug::sym_path = "./debug/2_symtable.sym";
+std::string Debug::AST_path = "./debug/3_AST.par";
+std::string Debug::IR_path = "./debug/4_IR.ir";
+std::string Debug::CFG_path = "./debug/5_cfg.cfg";
+std::string Debug::LVA_path = "./debug/6_lva.cfg";
 std::ofstream Debug::debug_output(Debug::Path);
 
 void Debug::debug_out(std::string type_path)

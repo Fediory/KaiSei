@@ -70,22 +70,20 @@ struct CFG_node
     std::set<std::string> out_variables;
     std::set<std::string> used_variables;
     std::set<std::string> defined_variables;
-    // End ActivityAnalysis
 
     // For ExpressionAnalysis
     std::set<BackExpression> in_expressions;
     std::set<BackExpression> out_expressions;
     std::set<BackExpression> generated_expressions;
     std::set<BackExpression> killed_expressions;
-    // End ExpressionAnalysis
 
-    // save linear index of other basic block in the cfg
+    // save linear index of other basic block in the CFG
     std::vector<std::string> str_predecessor;
     std::vector<std::string> str_successor;
     std::vector<std::shared_ptr<CFG_node>> predecessor;
     std::vector<std::shared_ptr<CFG_node>> successor;
 
-    virtual void print() const;
+    virtual void print() const; 
 };
 
 #define CFG_PTR std::shared_ptr<CFG_node>
@@ -98,6 +96,13 @@ namespace CFG_list
 }
 
 namespace CFG_safe
+{
+    void raise_error(const std::string &error_code);
+}
+
+//-------------------------LVA----------------------------//
+
+namespace LVA_safe
 {
     void raise_error(const std::string &error_code);
 }
