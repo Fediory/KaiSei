@@ -18,7 +18,7 @@ void shell_input(int argc, char **argv, std::string &input_filename, std::string
     int normal_index = 0;
     optimize = false;
     to_assembly = false;
-    std::string debug_list = "shell lex parse sym opt optsym ir cfg lva reg arm";
+    std::string debug_list = "shell lex parse sym opt optsym ir cfg lva ra arm";
 
     if (argc <= 1 || strcmp(argv[1], "--help") == 0)
     {
@@ -40,7 +40,7 @@ void shell_input(int argc, char **argv, std::string &input_filename, std::string
                   << "                        output file path with name." << std::endl
                   << "--debug=<debug_mode>  - If set, then turn on the debug mode, where " << std::endl
                   << "                        debug_mode can be \"shell, lex, parse, sym, opt," << std::endl
-                  << "                        optsym, ir, cfg, lva, reg, arm\". The default" << std::endl
+                  << "                        optsym, ir, cfg, lva, ra, arm\". The default" << std::endl
                   << "                        debug_mode is arm, which output the arm codes. " << std::endl
                   << "                        e.g. --debug shell" << std::endl
                   << std::endl

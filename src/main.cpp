@@ -12,9 +12,8 @@
 #include "IR.h"
 #include "CFG.h"
 #include "LVA.h"
-// #include "AvailableExpression.h"
-// #include "RegisterAllocate.h"
-// #include "InstructionAllocate.h"
+#include "RA.h"
+#include "IA.h"
 
 #include <cstdio>
 #include <string>
@@ -134,53 +133,65 @@ int main(int argc, char **argv)
     if (Safe::GlobalError)
         return 0;
 
+    //
     // Live Variable Analysis
     BlockVariableFactory block_variable_factory;
     for (auto &[name, mul_block_chain] : cfg_mul_function_chain)
         block_variable_factory.analyze_block_variables(mul_block_chain);
 
-    if (debug_mode == "lva"){
+    if (debug_mode == "lva")
+    {
         BlockVariableFactory::print_all(cfg_mul_function_chain);
         Debug::debug_out(Debug::LVA_path);
     }
-        
+
     if (Safe::GlobalError)
         return 0;
 
-    // // Register Allocation
-    // RegisterAllocator RegAllo(
-    //     cfg_mul_function_chain,
-    //     cfg_mul_static_chain,
-    //     cfg_function_name,
-    //     debug_mode == "reg"
-    // );
-    // RegAllo.Generate();
-    // auto ir_pro_normal_chain = RegAllo.get_result_IR_pro_normal_chain();
-    // auto ir_static_chain = RegAllo.get_result_IR_static_chain();
-    // if (debug_mode == "reg")
-    //     CFG_pro_list::print_all(RegAllo.get_result_pro_function_chain());
+    //
+    // Register Allocation
+    RegisterAllocator register_allocator(
+        cfg_mul_function_chain,
+        cfg_mul_static_chain,
+        cfg_function_name,
+        debug_mode == "ra");
+    register_allocator.Generate();
+    auto ir_pro_normal_chain = register_allocator.get_result_IR_pro_normal_chain();
+    auto ir_static_chain = register_allocator.get_result_IR_static_chain();
+    if (debug_mode == "ra")
+    {
+        CFG_pro_list::print_all(register_allocator.get_result_pro_function_chain());
+        Debug::debug_out(Debug::RA_path);
+    }
 
-    // if (Safe::GlobalError) return 0;
+    if (Safe::GlobalError)
+        return 0;
 
-    // // Instruction Allocation
-    // InstructionAllocator InsAllo(ir_pro_normal_chain, ir_static_chain);
-    // InsAllo.Generate();
-    // const auto& ARM_code = InsAllo.get_result_ARM_code();
-    // if (debug_mode == "arm") {
-    //     std::cout << "********************** static chain ***********************" << std::endl;
-    //     ARM::print_static_chain(ir_static_chain);
-    //     std::cout << "********************** normal chain ***********************" << std::endl;
-    //     ARM::print_normal_chain(ir_pro_normal_chain);
-    //     std::cout << "**********************  arm chain   ***********************" << std::endl;
-    //     ARM::print_all(ARM_code);
-    // }
+    // Instruction Allocation
+    InstructionAllocator InsAllo(ir_pro_normal_chain, ir_static_chain);
+    InsAllo.Generate();
+    const auto &ARM_code = InsAllo.get_result_ARM_code();
+    if (debug_mode == "arm")
+    {
+        Debug::debug_output << "********************** static chain ***********************" << std::endl;
+        ARM::print_static_chain(ir_static_chain);
+        Debug::debug_output << "********************** normal chain ***********************" << std::endl;
+        ARM::print_normal_chain(ir_pro_normal_chain);
+        Debug::debug_output << "**********************  arm chain   ***********************" << std::endl;
+        ARM::print_all(ARM_code);
+        Debug::debug_out(Debug::IA_path);
+        return 0;
+    }
 
-    // if (Safe::GlobalError)
-    //     return 0;
+    if (Safe::GlobalError)
+        return 0;
 
-    // Dump armv7 code to .s file
-    // if (to_assembly)
-    //     ARM::dump_all(ARM_code, output_filename);
+    // Dump arm32 code to .s file
+    if (to_assembly){
+        ARM::dump_all(ARM_code, output_filename);
+        Debug::debug_out(Debug::ARM_path);
+    }
+        
 
     return 0;
 }

@@ -30,6 +30,9 @@ namespace Debug
 
     extern std::string CFG_path;
     extern std::string LVA_path;
+    extern std::string RA_path;
+    extern std::string IA_path;
+    extern std::string ARM_path;
     extern void debug_out(std::string type_path);
 }
 

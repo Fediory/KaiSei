@@ -83,7 +83,7 @@ struct CFG_node
     std::vector<std::shared_ptr<CFG_node>> predecessor;
     std::vector<std::shared_ptr<CFG_node>> successor;
 
-    virtual void print() const; 
+    virtual void print() const;
 };
 
 #define CFG_PTR std::shared_ptr<CFG_node>
@@ -107,66 +107,92 @@ namespace LVA_safe
     void raise_error(const std::string &error_code);
 }
 
-// enum register_name {
-//     a1, a2, a3, a4,
-//     v1, v2, v3, v4, v5, v6, v7, v8,
-//     ip, sp, lr, pc,
-//     spill,
-//     no_name
-// };
+//-------------------------RA----------------------------//
 
-// struct register_id {
-//     register_name type = no_name;
-//     int spill_len = 0;
-// };
+enum register_name
+{
+    a1,
+    a2,
+    a3,
+    a4,
+    v1,
+    v2,
+    v3,
+    v4,
+    v5,
+    v6,
+    v7,
+    v8,
+    ip,
+    sp,
+    lr,
+    pc,
+    spill,
+    no_name
+};
 
-// const std::string register_name_str[] = {
-//         "a1", "a2", "a3", "a4",
-//         "v1", "v2", "v3", "v4", "v5", "v6", "v7","v8",
-//         "ip", "sp", "lr", "pc",
-//         "spill",
-//         "no_name"
-// };
+struct register_id
+{
+    register_name type = no_name;
+    int spill_len = 0;
+};
 
-// struct IR_node_pro : public IR_node {
-//     register_id tar;
-//     register_id src1;
-//     register_id src2;
+const std::string register_name_str[] = {
+    "a1", "a2", "a3", "a4",
+    "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8",
+    "ip", "sp", "lr", "pc",
+    "spill",
+    "no_name"};
 
-//     void print() const override;
-// };
+struct IR_node_pro : public IR_node
+{
+    register_id tar;
+    register_id src1;
+    register_id src2;
 
-// #define IR_pro_PTR std::shared_ptr<IR_node_pro>
+    void print() const override;
+};
 
-// struct CFG_pro_node : public CFG_node {
-//     std::vector<IR_pro_PTR> content_pro;
-//     void print() const override;
-// };
+#define IR_pro_PTR std::shared_ptr<IR_node_pro>
 
-// #define CFG_pro_PTR std::shared_ptr<CFG_pro_node>
+struct CFG_pro_node : public CFG_node
+{
+    std::vector<IR_pro_PTR> content_pro;
+    void print() const override;
+};
 
-// namespace CFG_pro_list {
-//     void print_all(const std::vector<CFG_pro_PTR>& CFG_pro_blocks_chain);
-//     void print_all(const std::vector<std::vector<CFG_pro_PTR>>& static_chain);
-//     void print_all(const std::map<std::string, std::vector<CFG_pro_PTR>>& function_pro_chain);
-// }
+#define CFG_pro_PTR std::shared_ptr<CFG_pro_node>
 
-// // ARM node design
+namespace CFG_pro_list
+{
+    void print_all(const std::vector<CFG_pro_PTR> &CFG_pro_blocks_chain);
+    void print_all(const std::vector<std::vector<CFG_pro_PTR>> &static_chain);
+    void print_all(const std::map<std::string, std::vector<CFG_pro_PTR>> &function_pro_chain);
+}
 
-// enum arm_type{
-//     arm_global_label, arm_func_label, arm_block_label, arm_ins, arm_section
-// };
+//-------------------------IA&ARM----------------------------//
 
-// struct ARM_node{
-//     int index=-1;
-//     arm_type type = arm_ins;
-//     std::string instruction;
-//     std::string comment;
-// };
+enum arm_type
+{
+    arm_global_label,
+    arm_func_label,
+    arm_block_label,
+    arm_ins,
+    arm_section
+};
 
-// namespace ARM {
-//     void print_normal_chain(std::vector<IR_pro_PTR> normal_chain);
-//     void print_static_chain(std::vector<IR_PTR> static_chain);
-//     void print_all(const std::vector<ARM_node>& ARM_code);
-//     void dump_all(const std::vector<ARM_node>& ARM_code, const std::string& output_filename);
-// };
+struct ARM_node
+{
+    int index = -1;
+    arm_type type = arm_ins;
+    std::string instruction;
+    std::string comment;
+};
+
+namespace ARM
+{
+    void print_normal_chain(std::vector<IR_pro_PTR> normal_chain);
+    void print_static_chain(std::vector<IR_PTR> static_chain);
+    void print_all(const std::vector<ARM_node> &ARM_code);
+    void dump_all(const std::vector<ARM_node> &ARM_code, const std::string &output_filename);
+};

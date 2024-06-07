@@ -16,6 +16,9 @@ std::string Debug::AST_path = "./debug/3_AST.par";
 std::string Debug::IR_path = "./debug/4_IR.ir";
 std::string Debug::CFG_path = "./debug/5_cfg.cfg";
 std::string Debug::LVA_path = "./debug/6_lva.cfg";
+std::string Debug::RA_path = "./debug/7_ra.cfg";
+std::string Debug::IA_path = "./debug/8_ia.S";
+std::string Debug::ARM_path = "./debug/test.S";
 std::ofstream Debug::debug_output(Debug::Path);
 
 void Debug::debug_out(std::string type_path)
