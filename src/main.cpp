@@ -22,7 +22,6 @@
 
 int main(int argc, char **argv)
 {
-
     //-------------------------Shell----------------------------//
 
     // right input: ./KaiSei [options] <input_name> <output_name>
@@ -189,7 +188,7 @@ int main(int argc, char **argv)
     // Dump arm32 code to .s file
     if (to_assembly){
         ARM::dump_all(ARM_code, output_filename);
-        Debug::debug_out(Debug::ARM_path);
+        Debug::debug_out(output_filename);
     }
         
 

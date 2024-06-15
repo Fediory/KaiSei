@@ -47,12 +47,11 @@ void InstructionAllocator::code_section_generate()
     ARM_node now_ARM;
 
     now_ARM.type = arm_section;
-    now_ARM.instruction = ".text";
+    now_ARM.instruction = "";
     ARM_chain.push_back(now_ARM);
 
     for (const auto &it : ir_pro_normal_chain)
     {
-
         if (it->ir_type == ir_label && it->target.name.at(0) == '@')
         {
 
@@ -118,7 +117,6 @@ void InstructionAllocator::initialized_generate(const std::shared_ptr<IR_node> &
                     now_ARM.instruction = ".word    " + std::to_string(it->org_1.IVTT.self_get_int_value());
                 ARM_chain.push_back(now_ARM);
                 Debug::debug_output << it->index << std::endl;
-                std::cout << "111";
             }
             it = it->next;
         }

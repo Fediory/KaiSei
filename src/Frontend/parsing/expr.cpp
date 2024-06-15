@@ -7,6 +7,7 @@
 
 #include "expr.h"
 #include <stack>
+#include <iostream>
 
 int assign_operator_left(const std::string &op)
 {
@@ -145,8 +146,28 @@ TOKEN_PTR FunctionUsageAST::Parse()
 
     // v --- sym search & attribution --- v //
     SYM_PTR temp_sym_node = AST_safe::search_id_name(token_safe::data(now_token), symtable_ptr);
-    head->absorb_sym_attribution(temp_sym_node);
-    head->declaration_bound_sym_node = temp_sym_node;
+    if (temp_sym_node == nullptr)
+    {
+        std::string now_func = now_token->data;
+        Safe::LLVM_putint = !(now_func.compare(inline_LLVM_string_name[inline_type::putint]));
+        Safe::LLVM_putch = !now_func.compare(inline_LLVM_string_name[inline_type::putch]);
+        Safe::LLVM_putarray = !now_func.compare(inline_LLVM_string_name[inline_type::putarray]);
+        Safe::LLVM_getint = !now_func.compare(inline_LLVM_string_name[inline_type::getint]);
+        Safe::LLVM_getch = !now_func.compare(inline_LLVM_string_name[inline_type::getch]);
+        Safe::LLVM_getarray = !now_func.compare(inline_LLVM_string_name[inline_type::getarray]);
+        Safe::LLVM_inline = Safe::LLVM_putint || Safe::LLVM_putch || Safe::LLVM_putarray || Safe::LLVM_getint || Safe::LLVM_getch || Safe::LLVM_getarray;
+        if (!Safe::LLVM_inline)
+        {
+            AST_safe::raise_error("Usage without definition", now_token);
+            GoNext(); // ! important
+            return now_token;
+        }
+    }
+    else
+    {
+        head->absorb_sym_attribution(temp_sym_node);
+        head->declaration_bound_sym_node = temp_sym_node;
+    }
     // ^ --- sym search & attribution--- ^ //
 
     AST_PTR var_name = std::make_shared<AST_node>();
@@ -283,6 +304,8 @@ TOKEN_PTR ExpressionAST::Parse()
 
             else
             {
+                if (Safe::LLVM_inline)
+                    return now_token;
                 AST_safe::raise_error("in Expression, missing operators or numbers", now_token);
                 return now_token;
             }
@@ -405,6 +428,8 @@ TOKEN_PTR ExpressionAST::Parse()
                 // 2.2.1 wrong operator
                 if (assign_operator_left(now_op) == -1)
                 {
+                    if (Safe::LLVM_inline)
+                        return now_token;
                     AST_safe::raise_error("in Expression, unexpected operator found", now_token);
                     return now_token;
                 }

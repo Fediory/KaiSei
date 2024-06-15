@@ -19,12 +19,10 @@ dbg_single:
 	@ ./KaiSei ./debug/test.c --debug $(DEBUG)
 
 run: 
-	@ ./KaiSei ./debug/test.c -S ./debug/test.S
+	@ ./KaiSei -S -o test.S ./debug/test.c
 
 dbg: 
 	@ ./KaiSei ./debug/test.c --debug lex
-	@ ./KaiSei ./debug/test.c --debug parse
-	@ ./KaiSei ./debug/test.c --debug sym
 	@ ./KaiSei ./debug/test.c --debug opt
 	@ ./KaiSei ./debug/test.c --debug optsym
 	@ ./KaiSei ./debug/test.c --debug ir
@@ -32,6 +30,9 @@ dbg:
 	@ ./KaiSei ./debug/test.c --debug lva
 	@ ./KaiSei ./debug/test.c --debug ra
 	@ ./KaiSei ./debug/test.c --debug arm
+
+dbg_shell:
+	@ ./KaiSei -S -o ./dbg/test.S ./dbg/test.c --debug shell
 
 dbg_clean:
 	@ rm -f ./debug/*.cfg

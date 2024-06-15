@@ -30,6 +30,14 @@ void ARM::print_static_chain(std::vector<std::shared_ptr<IR_node>> static_chain)
 
 void ARM::print_all(const std::vector<ARM_node> &ARM_code)
 {
+    if (Safe::LLVM_inline)
+    {
+        Debug::debug_output << inline_LLVM_code << std::endl;
+    }
+    else
+    {
+        Debug::debug_output << "\t.text" << std::endl;
+    }
 
     for (int i = 0; i < ARM_code.size(); i++)
     {

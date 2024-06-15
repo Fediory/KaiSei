@@ -52,6 +52,7 @@ public:
     int count_array_init_block(
         const std::shared_ptr<AST_node> &init,
         const std::vector<int> &index_list,
-        const IR_tuple &assign_unit, const IR_tuple &assign_target,
+        const IR_tuple &assign_unit, 
+        const IR_tuple &assign_target,
         int stair, int offset_base);
 };

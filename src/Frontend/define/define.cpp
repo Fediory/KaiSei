@@ -9,6 +9,13 @@
 #include <iostream>
 
 bool Safe::GlobalError = false;
+bool Safe::LLVM_inline = false;
+bool Safe::LLVM_getint = false;
+bool Safe::LLVM_getch = false;
+bool Safe::LLVM_getarray = false;
+bool Safe::LLVM_putint = false;
+bool Safe::LLVM_putch = false;
+bool Safe::LLVM_putarray = false;
 std::string Debug::Path = "./debug/1.txt";
 std::string Debug::lex_path = "./debug/1_lexical.lex";
 std::string Debug::sym_path = "./debug/2_symtable.sym";

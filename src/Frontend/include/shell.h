@@ -18,6 +18,7 @@ void shell_input(int argc, char **argv, std::string &input_filename, std::string
     int normal_index = 0;
     optimize = false;
     to_assembly = false;
+    bool to_debug = false;
     std::string debug_list = "shell lex parse sym opt optsym ir cfg lva ra arm";
 
     if (argc <= 1 || strcmp(argv[1], "--help") == 0)
@@ -28,7 +29,7 @@ void shell_input(int argc, char **argv, std::string &input_filename, std::string
                   << "Email: yixu-nwpu@mail.nwpu.edu.cn" << std::endl
                   << std::endl
                   << std::endl
-                  << "Usage: KaiSei [options] <input_name> <output_name>" << std::endl
+                  << "Usage: KaiSei [options] <output_name> <input_name>" << std::endl
                   << std::endl
                   << std::endl
                   << "KaiSei options: " << std::endl
@@ -46,8 +47,8 @@ void shell_input(int argc, char **argv, std::string &input_filename, std::string
                   << std::endl
                   << std::endl
                   << "Examples:             - ./KaiSei main.c" << std::endl
-                  << "                      - ./KaiSei -o -S main.c main.S" << std::endl
-                  << "                      - ./KaiSei -o -S --debug lex main.c main.S" << std::endl
+                  << "                      - ./KaiSei -o -S main.S main.c" << std::endl
+                  << "                      - ./KaiSei -o -S --debug lex main.c" << std::endl
                   << "                      - ./KaiSei --help" << std::endl
                   << std::endl;
     }
@@ -82,6 +83,7 @@ void shell_input(int argc, char **argv, std::string &input_filename, std::string
                         }
                         std::string debug_name(argv[i]);
                         debug_mode = debug_name;
+                        to_debug = true;
                         std::filesystem::path folderPath = "./debug";
                         if (!std::filesystem::exists(folderPath))
                         {
@@ -106,16 +108,33 @@ void shell_input(int argc, char **argv, std::string &input_filename, std::string
             // names
             else
             {
-                switch (normal_index)
+                if (to_debug)
                 {
-                case 0:
-                    input_filename = name;
-                    break;
-                case 1:
-                    output_filename = name;
-                    break;
-                default:
-                    break;
+                    switch (normal_index)
+                    {
+                    case 0:
+                        input_filename = name;
+                        break;
+                    case 1:
+                        output_filename = name;
+                        break;
+                    default:
+                        break;
+                    }
+                }
+                else
+                {
+                    switch (normal_index)
+                    {
+                    case 0:
+                        output_filename = name;
+                        break;
+                    case 1:
+                        input_filename = name;
+                        break;
+                    default:
+                        break;
+                    }
                 }
                 normal_index++;
             }

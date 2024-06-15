@@ -16,6 +16,13 @@
 namespace Safe
 {
     extern bool GlobalError;
+    extern bool LLVM_inline;
+    extern bool LLVM_getint;
+    extern bool LLVM_getch;
+    extern bool LLVM_getarray;
+    extern bool LLVM_putint;
+    extern bool LLVM_putch;
+    extern bool LLVM_putarray;
 }
 
 namespace Debug
@@ -35,6 +42,19 @@ namespace Debug
     extern std::string ARM_path;
     extern void debug_out(std::string type_path);
 }
+
+const std::string inline_LLVM_string_name[] = {
+    "getint", "getch", "getarray", "putint", "putch", "putarray"};
+
+enum inline_type
+{
+    getint = 0,
+    getch,
+    getarray,
+    putint,
+    putch,
+    putarray
+};
 
 enum literal_class
 {

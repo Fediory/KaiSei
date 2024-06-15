@@ -7,6 +7,7 @@
 
 #include "IR.h"
 #include "opt.h"
+#include <iostream>
 
 int IR::line_num = 0;
 int IR::label_num = 0;
@@ -205,6 +206,12 @@ void IR::function_generate(const std::shared_ptr<AST_node> &now_AST)
     {
         if (block_child->type == KeywordStatement && block_child->data == "return")
         {
+            if (func_type.represent_type == basic_int) {
+                IR_tuple ret("$ret");
+                    ret.IVTT.reset_and_parse_from_basic_type(now_AST->IVTT.return_basic_type());
+                IR_tuple res = expr_generate(block_child->child, ret);
+                create_cast_or_assign("", ret, res);
+            }
             create_forth("", (std::string) "$ra", "jumpr");
 
             // ! important
