@@ -16,7 +16,7 @@ bool Safe::LLVM_getarray = false;
 bool Safe::LLVM_putint = false;
 bool Safe::LLVM_putch = false;
 bool Safe::LLVM_putarray = false;
-std::string Debug::Path = "./debug/1.txt";
+std::string Debug::Path = "./1.txt";
 std::string Debug::lex_path = "./debug/1_lexical.lex";
 std::string Debug::sym_path = "./debug/2_symtable.sym";
 std::string Debug::AST_path = "./debug/3_AST.par";
@@ -69,8 +69,7 @@ void literal_value_storage::change_to_int()
 void literal_value_storage::cast_and_assign(int x)
 {
     literal_used = true;
-    if (literal_type == literal_int)
-        literal_value.int_value = (int)x;
+    literal_value.int_value = (int)x;
 }
 
 enum literal_class literal_value_storage::get_literal_type() const

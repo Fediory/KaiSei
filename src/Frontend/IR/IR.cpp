@@ -206,9 +206,10 @@ void IR::function_generate(const std::shared_ptr<AST_node> &now_AST)
     {
         if (block_child->type == KeywordStatement && block_child->data == "return")
         {
-            if (func_type.represent_type == basic_int) {
+            if (func_type.represent_type == basic_int)
+            {
                 IR_tuple ret("$ret");
-                    ret.IVTT.reset_and_parse_from_basic_type(now_AST->IVTT.return_basic_type());
+                ret.IVTT.reset_and_parse_from_basic_type(now_AST->IVTT.return_basic_type());
                 IR_tuple res = expr_generate(block_child->child, ret);
                 create_cast_or_assign("", ret, res);
             }
@@ -652,39 +653,64 @@ IR_tuple IR::expr_generate(const std::shared_ptr<AST_node> &now_AST, const IR_tu
             {
                 ans_1 = create_cast_or_not("", ans_1, ans);
                 ans_2 = create_cast_or_not("", ans_2, ans);
-                create_forth("", ans, "add" + end_f, ans_1, ans_2);
+                if (ans_1.is_name)
+                    create_forth("", ans, "add" + end_f, ans_1, ans_2);
+                else
+                    create_forth("", ans, "add" + end_f, ans_2, ans_1);
             }
             else if (now_AST->data == "-")
             {
                 ans_1 = create_cast_or_not("", ans_1, ans);
                 ans_2 = create_cast_or_not("", ans_2, ans);
-                create_forth("", ans, "sub" + end_f, ans_1, ans_2);
+                if (ans_1.is_name)
+                    create_forth("", ans, "sub" + end_f, ans_1, ans_2);
+                else
+                    create_forth("", ans, "sub" + end_f, ans_2, ans_1);
             }
             else if (now_AST->data == "*")
             {
-                IR_tuple mul_src1("%" + std::to_string(++now_register));
                 IR_tuple mul_src2("%" + std::to_string(++now_register));
-                mul_src1 = create_cast_or_not("", mul_src1, ans);
-                mul_src2 = create_cast_or_not("", mul_src2, ans);
-                create_forth("", ans, "mul" + end_f, mul_src1, mul_src2);
+                ans_1 = create_cast_or_not("", ans_1, ans);
+                ans_2 = create_cast_or_not("", ans_2, ans);
+                create_forth("", mul_src2, "assign", ans_2);
+                create_forth("", ans, "mul" + end_f, ans_1, mul_src2);
             }
             else if (now_AST->data == "/")
             {
-                IR_tuple mul_src1("%" + std::to_string(++now_register));
-                IR_tuple mul_src2("%" + std::to_string(++now_register));
-                mul_src1 = create_cast_or_not("", mul_src1, ans);
-                mul_src2 = create_cast_or_not("", mul_src2, ans);
-                create_forth("", ans, "div" + end_f, mul_src1, mul_src2);
+                IR_tuple div_src2("%" + std::to_string(++now_register));
+                ans_1 = create_cast_or_not("", ans_1, ans);
+                ans_2 = create_cast_or_not("", ans_2, ans);
+                create_forth("", div_src2, "assign", ans_2);
+                create_forth("", ans, "div" + end_f, ans_1, div_src2);
             }
             else if (now_AST->data == "%")
-                create_forth("", ans, "mod", ans_1, ans_2);
+            {
+                // no "mod"
+                // example:
+                // a % b = a - (a/b)*b
+                IR_tuple num("%" + std::to_string(++now_register));
+                IR_tuple tmp("%" + std::to_string(++now_register));
+                IR_tuple tmp2("%" + std::to_string(++now_register));
+                ans_1 = create_cast_or_not("", ans_1, ans);
+                ans_2 = create_cast_or_not("", ans_2, ans);
+                create_forth("", num, "assign", ans_2);
+                create_forth("", tmp, "div" + end_f, ans_1, num);
+                create_forth("", tmp2, "mul" + end_f, num, tmp);
+                create_forth("", ans, "sub" + end_f, ans_1, tmp2);
+            }
             else if (now_AST->data == "-unary")
-                create_forth("", ans, "sub" + end_f, 0, ans_2);
+            {
+                IR_tuple sub_src1("%" + std::to_string(++now_register));
+                create_forth("", sub_src1, "assign", 0);
+                create_forth("", ans, "sub" + end_f, sub_src1, ans_2);
+            }
             else if (now_AST->data == "+unary")
                 --now_register;
             else if (now_AST->data == "!")
             {
-                create_forth("", ans, "not", ans_1);
+                IR_tuple not_src1("%" + std::to_string(++now_register));
+                create_forth("", not_src1, "assign", now_AST->last_child->only_name);
+                create_forth("", ans, "not", not_src1);
             }
             else if (now_AST->data == "==")
             {

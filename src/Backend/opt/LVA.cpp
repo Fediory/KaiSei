@@ -1,7 +1,7 @@
 /**
  * @file LVA.cpp
  * @author Fediory Feng
- * @brief remove unused in BlockVariableFactory
+ * @brief Live Variable Analysis
  * @date 2024/06/05
  */
 
@@ -33,12 +33,20 @@ void BlockVariableFactory::calculate_defined_used(CFG_node &CFG_node)
         else if (operator_filter2(i->opera))
         {
             // Filter operators with 2 orgs
-            if (i->org_1.is_name && CFG_node.defined_variables.find(i->org_1.name) == CFG_node.defined_variables.end())
-                CFG_node.used_variables.emplace(i->org_1.name);
-            if (i->org_2.is_name && CFG_node.defined_variables.find(i->org_2.name) == CFG_node.defined_variables.end())
-                CFG_node.used_variables.emplace(i->org_2.name);
-            if (i->target.is_name && CFG_node.used_variables.find(i->target.name) == CFG_node.used_variables.end())
+            if (i->target.is_name && CFG_node.used_variables.find(i->target.name) == CFG_node.used_variables.end()){
                 CFG_node.defined_variables.emplace(i->target.name);
+                // std::cout << i->target.name+"\n";
+            }
+            
+            if (i->org_1.is_name){
+                CFG_node.used_variables.emplace(i->org_1.name);
+                // std::cout << "1\n";
+            }
+            // && CFG_node.defined_variables.find(i->org_1.name) == CFG_node.defined_variables.end()
+            if (i->org_2.is_name){
+                CFG_node.used_variables.emplace(i->org_2.name);
+                // std::cout << "2\n";
+            }
         }
     }
 }
@@ -82,7 +90,7 @@ void BlockVariableFactory::analyze_block_variables(std::vector<CFG_PTR> &list)
     }
     while (BlockVariableFactory::detect_change())
     {
-        for (auto it = list.rbegin(); it != list.rend(); it++)
+        for (auto it = list.begin(); it != list.end(); it++)
         {
             BlockVariableFactory::calculate_activity(**it);
         }

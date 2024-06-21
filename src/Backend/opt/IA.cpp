@@ -46,10 +46,6 @@ void InstructionAllocator::code_section_generate()
 
     ARM_node now_ARM;
 
-    now_ARM.type = arm_section;
-    now_ARM.instruction = "";
-    ARM_chain.push_back(now_ARM);
-
     for (const auto &it : ir_pro_normal_chain)
     {
         if (it->ir_type == ir_label && it->target.name.at(0) == '@')
@@ -175,7 +171,7 @@ void InstructionAllocator::function_generate(const std::shared_ptr<IR_node_pro> 
     for (int i = now_IR_pro->index + 1 - ir_pro_normal_chain[0]->index; i < ir_pro_normal_chain.size(); i++)
     {
 
-        if (ir_pro_normal_chain[i]->ir_type == ir_forth && ir_pro_normal_chain[i]->opera == "jumpr")
+        if (ir_pro_normal_chain[i]->ir_type == ir_forth && (ir_pro_normal_chain[i]->opera == "jumpr"))
         {
             function_exit_generate(ir_pro_normal_chain[i], isLeaf);
             break;
@@ -186,7 +182,7 @@ void InstructionAllocator::function_generate(const std::shared_ptr<IR_node_pro> 
             block_label_generate(ir_pro_normal_chain[i]);
         }
 
-        if (ir_pro_normal_chain[i]->ir_type == ir_forth && (ir_pro_normal_chain[i]->opera == "le" || ir_pro_normal_chain[i]->opera == "gr" || ir_pro_normal_chain[i]->opera == "eq"))
+        if (ir_pro_normal_chain[i]->ir_type == ir_forth && (ir_pro_normal_chain[i]->opera == "lee" || ir_pro_normal_chain[i]->opera == "le" || ir_pro_normal_chain[i]->opera == "gr" || ir_pro_normal_chain[i]->opera == "eq"))
         {
             compare_generate(ir_pro_normal_chain[i]);
         }
@@ -196,7 +192,7 @@ void InstructionAllocator::function_generate(const std::shared_ptr<IR_node_pro> 
             call_generate(ir_pro_normal_chain[i]);
         }
 
-        if (ir_pro_normal_chain[i]->ir_type == ir_forth && ir_pro_normal_chain[i]->opera == "jump")
+        if (ir_pro_normal_chain[i]->ir_type == ir_forth && (ir_pro_normal_chain[i]->opera == "jump"))
         {
             jump_generate(ir_pro_normal_chain[i]);
         }
@@ -216,7 +212,7 @@ void InstructionAllocator::function_generate(const std::shared_ptr<IR_node_pro> 
             arithmetic_generate(ir_pro_normal_chain[i]);
         }
 
-        if (ir_pro_normal_chain[i]->ir_type == ir_forth && (ir_pro_normal_chain[i]->opera == "not" || ir_pro_normal_chain[i]->opera == "lee"))
+        if (ir_pro_normal_chain[i]->ir_type == ir_forth && (ir_pro_normal_chain[i]->opera == "not"))
         {
             logical_generate(ir_pro_normal_chain[i]);
         }
@@ -471,12 +467,12 @@ void InstructionAllocator::logical_generate(const std::shared_ptr<IR_node_pro> &
     std::string opera_str;
 
     if (now_IR_pro->opera == "not")
-        opera_str = "not    ";
+        opera_str = "mvn    ";
     else if (now_IR_pro->opera == "lee")
-        opera_str = "lee    ";
+        opera_str = "le     ";
 
     now_ARM.type = arm_ins;
-    now_ARM.instruction = opera_str + register_name_str[now_IR_pro->tar.type] + ", " + register_name_str[now_IR_pro->src1.type] + ", #" + std::to_string(now_IR_pro->org_2.IVTT.self_get_int_value());
+    now_ARM.instruction = opera_str + register_name_str[now_IR_pro->tar.type] + ", " + register_name_str[now_IR_pro->src1.type];
     ARM_chain.push_back(now_ARM);
 }
 
@@ -504,10 +500,12 @@ void InstructionAllocator::alloc_generate(const std::shared_ptr<IR_node_pro> &no
 
     now_ARM.type = arm_ins;
     std::string len = std::to_string(now_IR_pro->org_1.IVTT.self_get_int_value());
-    now_ARM.instruction = "sub    sp, sp, #" + len;
-    ARM_chain.push_back(now_ARM);
+    if(!(register_name_str[now_IR_pro->tar.type] == "no_name")){
+        now_ARM.instruction = "sub    sp, sp, #" + len;
+        ARM_chain.push_back(now_ARM);
 
-    now_ARM.type = arm_ins;
-    now_ARM.instruction = "movs    " + register_name_str[now_IR_pro->tar.type] + ", sp";
-    ARM_chain.push_back(now_ARM);
+        now_ARM.type = arm_ins;
+        now_ARM.instruction = "movs    " + register_name_str[now_IR_pro->tar.type] + ", sp";
+        ARM_chain.push_back(now_ARM);
+    }
 }

@@ -19,17 +19,17 @@ dbg_single:
 	@ ./KaiSei ./debug/test.c --debug $(DEBUG)
 
 run: 
-	@ ./KaiSei -S -o test.S ./debug/test.c
+	@ ./KaiSei -S -o ./debug/test.S ./debug/test.c
 
 dbg: 
-	@ ./KaiSei ./debug/test.c --debug lex
-	@ ./KaiSei ./debug/test.c --debug opt
-	@ ./KaiSei ./debug/test.c --debug optsym
-	@ ./KaiSei ./debug/test.c --debug ir
-	@ ./KaiSei ./debug/test.c --debug cfg
-	@ ./KaiSei ./debug/test.c --debug lva
-	@ ./KaiSei ./debug/test.c --debug ra
-	@ ./KaiSei ./debug/test.c --debug arm
+	@ ./KaiSei --debug lex ./debug/test.c
+	@ ./KaiSei --debug parse ./debug/test.c 
+	@ ./KaiSei --debug optsym ./debug/test.c 
+	@ ./KaiSei --debug ir ./debug/test.c 
+	@ ./KaiSei --debug cfg ./debug/test.c 
+	@ ./KaiSei --debug lva ./debug/test.c 
+	@ ./KaiSei --debug ra ./debug/test.c 
+	@ ./KaiSei --debug arm ./debug/test.c 
 
 dbg_shell:
 	@ ./KaiSei -S -o ./dbg/test.S ./dbg/test.c --debug shell

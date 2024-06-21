@@ -356,6 +356,17 @@ public:
             }
         }
 
+        // "!!" operators is useless
+        std::shared_ptr<token_node> now(head);
+        while (now != nullptr)
+        {
+            if(now->next != nullptr && now->next->next != nullptr)
+                if (now->next->data == "!" && now->next->next->data == "!")
+                {
+                    now->next = now->next->next->next;
+                }
+            now = now->next;
+        }
         head = token_safe::next(head);
     }
 };

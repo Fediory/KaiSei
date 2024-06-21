@@ -100,7 +100,7 @@ int main(int argc, char **argv)
 
     //
     // IR Generation
-    IR ir(optimized_AST_head);
+    IR ir(AST_head);
     ir.Generate();
     const IR_PTR &IR_head = ir.head;
     if (debug_mode == "ir")
@@ -135,8 +135,10 @@ int main(int argc, char **argv)
     //
     // Live Variable Analysis
     BlockVariableFactory block_variable_factory;
-    for (auto &[name, mul_block_chain] : cfg_mul_function_chain)
+    for (auto &[name, mul_block_chain] : cfg_mul_function_chain){
+        // std::cout << name + '\n';
         block_variable_factory.analyze_block_variables(mul_block_chain);
+    }
 
     if (debug_mode == "lva")
     {
@@ -186,11 +188,12 @@ int main(int argc, char **argv)
         return 0;
 
     // Dump arm32 code to .s file
-    if (to_assembly){
-        ARM::dump_all(ARM_code, output_filename);
-        Debug::debug_out(output_filename);
-    }
-        
+    // if (to_assembly){
+    //     ARM::COJ_print_all(ARM_code, output_filename);
+    //     Debug::debug_output.close();
+    //     std::remove(Debug::Path.c_str());
+    // }
+    ARM::put_cases(output_filename,ARM_code,to_assembly);    
 
     return 0;
 }
