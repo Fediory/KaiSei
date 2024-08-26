@@ -20,7 +20,7 @@
 
 - 【6.22】Debug完成，可通过71个测例（可确保90%测例在IR端均能正常通过）
 
-  ![AC](.\fig\AC.png)
+  ![AC](./fig/AC.png)
 
 ### 项目目录
 
@@ -87,7 +87,7 @@
 - make all：重新编译此文件
 - make help（./KaiSei help）：查看如何使用此编译器 
 
-![help](.\fig\help.png)
+![help](./fig/help.png)
 
 ### Debug流程
 
